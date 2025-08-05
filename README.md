@@ -68,10 +68,13 @@ This software is intended for research and academic use. For licensing in commer
 
 ## Contact
 Project Author: MKPN Joanne
+
 Student Number: 23084
+
 Research Supervisor: Mr Gayan Perera
 
 Institution: National School of Business Management
 
 Email: pramudinurakshi27@gmail.com
+
 © 2025 by MKPN Joanne 
