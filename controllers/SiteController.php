@@ -9,6 +9,8 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\FeedConsumption;
+use Psy\Util\Str;
 
 class SiteController extends Controller
 {
@@ -59,9 +61,10 @@ class SiteController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex(): Response       
+
     {
-        return $this->render('index');
+      return $this->redirect(['dashboard/index']);
     }
 
     /**

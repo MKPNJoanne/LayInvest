@@ -1,0 +1,93 @@
+body {
+    margin: 0;
+    font-family: "Inter", sans-serif;
+    background-color: #f9f9f9;
+}
+
+
+.sidebar {
+    background-color: #064420;
+    color: white;
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.sidebar.collapsed {
+    width: 50px;
+}
+
+.sidebar .brand {
+    font-size: 1.2rem;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar ul li {
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.sidebar ul li:hover {
+    background-color: #076d38;
+}
+
+.sidebar ul li i {
+    min-width: 20px;
+    text-align: center;
+}
+
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.main-content.expanded {
+    margin-left: 70px;
+}
+
+.hamburger {
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-right: 10px;
+    color: #333;
+}
+/* Header styling */
+header {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-radius: 10px;
+    background: transparent;
+    border-bottom: none;
+    width: 100%;
+    position: sticky;
+    margin-left: 0;
+    top: 0;
+    z-index: 10;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* When scrolled */
+header.scrolled {
+    background-color: #eef3f1;
+    
+}
+
