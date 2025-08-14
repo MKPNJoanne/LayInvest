@@ -16,11 +16,15 @@ df = df.rename(columns={
     'feed': 'feed_g',
     'gain': 'gain_g',
     'laying_per': 'laying_percentage',
-    'egg_weight': 'egg_weight_g'
+    'egg_weight': 'egg_weight_g',
+    'fcr': 'fcr',
+    'livability': 'livability',
+    'small_egg_lay_per': 'small_egg_lay_percentage',
+    'egg_loss': 'egg_loss_percentage',
 })
 
 # --- CONVERT TYPES ---
-for col in ['std_weight_g', 'feed_g', 'gain_g', 'laying_percentage', 'egg_weight_g']:
+for col in ['std_weight_g', 'feed_g', 'gain_g', 'laying_percentage', 'egg_weight_g','fcr','livability','small_egg_lay_percentage', 'egg_loss_percentage']:
     df[col] = pd.to_numeric(df[col], errors='coerce')
 
 df['week_no'] = pd.to_numeric(df['week_no'], errors='coerce').astype('Int64')

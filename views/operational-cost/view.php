@@ -79,9 +79,9 @@ $this->title = "Operational Cost Input #{$model['id']}";
     </div>
 
     <!--  button -->
-    <div class="mt-3">
-        <?= Html::a('Calculate Operational Cost', ['ops/calculate', 'id' => $model['id']], [
-            'class' => 'btn btn-success btn-lg'
-        ]) ?>
-    </div>
-</div>
+    <?= Html::a(
+  'Calculate Operational Cost',
+  ['operational-cost/calculate', 'id' => $model['id']],  
+  ['class' => 'btn btn-success btn-lg']
+) ?>
+

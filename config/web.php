@@ -45,16 +45,24 @@ $config = [
         'db' => $db,
         
         'urlManager' => [
-        'enablePrettyUrl' => true,
-        'showScriptName' => false,
-        'enableStrictParsing' => false,
-        'rules' => [
-            '' => 'site/index',
-            'operational-cost' => 'operational-cost/create',
-            'operational-cost/<id:\d+>' => 'operational-cost/view',
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+            'enableStrictParsing' => false,
+            'rules' => [
+                '' => 'site/index',
+
+                // Existing shortcuts
+                'operational-cost' => 'operational-cost/create',
+                'operational-cost/<id:\d+>' => 'operational-cost/view',
+
+                // NEW: allowing any action on OperationalCostController
+                'operational-cost/<action:\w+>' => 'operational-cost/<action>',
+
+                // Optional: short alias "ops/*" → OperationalCostController
+                'ops/<action:\w+>' => 'operational-cost/<action>',
             ],
         ],
-        
+                
     ],
     'params' => $params,
 ];
