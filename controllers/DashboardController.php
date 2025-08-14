@@ -47,4 +47,6 @@ class DashboardController extends Controller
             'broken_eggs_pct'    => $brokenData['broken_percentage'],
         ]);
     }
+
+    
 }

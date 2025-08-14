@@ -29,9 +29,12 @@ $this->registerCsrfMetaTags();
         <span class="brand-text">LayInvest</span>
     </div>
     <ul>
-        <li><i class="fas fa-chart-line"></i> <span>Operational Cost Analysis</span></li>
-        <li><i class="fas fa-coins"></i> <span>Revenue & Break-even</span></li>
-        <li><i class="fas fa-list"></i> <span>Summary</span></li>
+        <ul>
+    <li><?= Html::a('<i class="fas fa-chart-line"></i> Overview', ['dashboard/index']) ?></li>      
+    <li><?= Html::a('<i class="fas fa-chart-line"></i> Operational Cost Analysis', ['operational-cost/create']) ?></li>
+    <li><?= Html::a('<i class="fas fa-coins"></i> Revenue & Break-even', ['revenue/index']) ?></li>
+    <li><?= Html::a('<i class="fas fa-list"></i> Summary', ['summary/index']) ?></li>
+        </ul>
     </ul>
 </div>
 
