@@ -1,22 +1,18 @@
-/* ===============================
-   Success Alert
-   =============================== */
+/*Success Alert= */
 .alert-success {
     border: none;
     border-radius: 10px;
-    background: #e8f6ee;
+    background: transparent;
     color: #0b6b3a;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     font-weight: 500;
 }
 
-/* ===============================
-   Info Banner (HARTI)
-   =============================== */
+/*  Info Banner (HARTI)*/
 .alert-info {
     border: none;
     border-radius: 8px;
-    background: #e6ece6;
+    background: #d6f5d6;
     color: #042a0b;
     padding: 14px 16px;
     display: flex;
@@ -32,15 +28,17 @@
 
 .form-control {
     background-color: #f6f3f3c6 !important;
-    /* border: 1px solid #a8bfa8; */
-    color: #042a0b;
+    border: none !important; 
+    border-radius: 6px; 
+    box-shadow: none; 
+    width: 100%;
 }
 
 .form-control:focus {
     background-color: #e6ece6 !important;
-    /* border-color: #076d38; */
-    box-shadow: 0 0 0 0.15rem rgba(7, 109, 56, 0.25);
-    color: #042a0b;
+    border: none !important;
+    outline: none; 
+    box-shadow: 0 0 0 0.15rem rgba(7, 109, 56, 0.25); 
 }
 
 
@@ -80,9 +78,7 @@
     background-color: #fafafa !important;
 }
 
-/* ===============================
-   Button Styling
-   =============================== */
+/*Button Styling*/
 .btn-success {
     border-radius: 7px;
     padding: 0.6rem 1.2rem;

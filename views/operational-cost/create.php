@@ -21,15 +21,13 @@ $this->title = 'Operational Cost Input';
         'method' => 'post',
     ]); ?>
 
-    <?= $form->field($model, 'start_date')->input('date', ['required' => true,
-     'class' => 'form-control banner-bg']) ?>
+    <?= $form->field($model, 'start_date')->input('date', ['required' => true]) ?>
 
     <?= $form->field($model, 'flock_size')->input('number', [
         'min' => 500,
         'max' => 5000,
         'required' => true,
-        'placeholder' => 'Enter a number between 500–5000',
-         'class' => 'form-control banner-bg'
+        'placeholder' => 'Enter a number between 500–5000'
     ]) ?>
 
     <?= $form->field($model, 'cost_labor_override')->input('number', [
