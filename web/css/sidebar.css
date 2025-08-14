@@ -1,74 +1,100 @@
-body {
-    margin: 0;
-    font-family: "Inter", sans-serif;
-    background-color: #f9f9f9;
-}
-
-
+/* Sidebar */
 .sidebar {
-    background-color: #064420;
-    color: white;
+    background-color: #043d20; 
+    color: #fff;
     width: 250px;
     height: 100vh;
     position: fixed;
     left: 0;
     top: 0;
-    transition: all 0.3s ease;
+    transition: width 0.3s ease;
     overflow: hidden;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
 }
 
 .sidebar.collapsed {
     width: 50px;
 }
 
+/* Brand section */
 .sidebar .brand {
-    font-size: 1.2rem;
+    font-size: 1.6rem;
+    font-weight: 600;
     padding: 20px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.sidebar .brand i {
+    font-size: 1.5rem;
+}
+
+/* Navigation list */
 .sidebar ul {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
+/* Each menu item */
 .sidebar ul li {
-    padding: 15px 20px;
+    padding: 14px 20px;
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: background 0.2s ease, padding-left 0.2s ease;
 }
 
 .sidebar ul li:hover {
-    background-color: #076d38;
+    background-color: rgba(255, 255, 255, 0.08);
+    padding-left: 25px;
 }
 
-.sidebar ul li i {
+.sidebar ul li a {
+    color: #e0e0e0;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar ul li a i {
     min-width: 20px;
-    text-align: center;
+    font-size: 1rem;
+    color: #a8d5b5;
 }
 
+.sidebar ul li a:hover {
+    color: #fff;
+}
+
+/* Main content */
 .main-content {
     margin-left: 250px;
     padding: 20px;
-    transition: all 0.3s ease;
+    transition: margin-left 0.3s ease;
 }
 
 .main-content.expanded {
-    margin-left: 70px;
+    margin-left: 60px;
 }
 
+/* Hamburger button */
 .hamburger {
     font-size: 1.5rem;
     cursor: pointer;
     margin-right: 10px;
-    color: #333;
+    padding-right: 5px;
+    padding-bottom: 1px;
+    color: #2f332f;
 }
+
 /* Header styling */
 header {
     display: flex;
@@ -79,7 +105,6 @@ header {
     border-bottom: none;
     width: 100%;
     position: sticky;
-    margin-left: 0;
     top: 0;
     z-index: 10;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
@@ -88,6 +113,4 @@ header {
 /* When scrolled */
 header.scrolled {
     background-color: #eef3f1;
-    
 }
-

@@ -25,12 +25,12 @@ $this->registerCsrfMetaTags();
 
 <div class="sidebar" id="sidebar">
     <div class="brand">
-        <i class="fas fa-tachometer-alt"></i>
+        <i class="fas fa-egg"></i>
         <span class="brand-text">LayInvest</span>
     </div>
     <ul>
         <ul>
-    <li><?= Html::a('<i class="fas fa-chart-line"></i> Overview', ['dashboard/index']) ?></li>      
+    <li><?= Html::a('<i class="fas fa-chart-pie"></i> Overview', ['dashboard/index']) ?></li>
     <li><?= Html::a('<i class="fas fa-chart-line"></i> Operational Cost Analysis', ['operational-cost/create']) ?></li>
     <li><?= Html::a('<i class="fas fa-coins"></i> Revenue & Break-even', ['revenue/index']) ?></li>
     <li><?= Html::a('<i class="fas fa-list"></i> Summary', ['summary/index']) ?></li>

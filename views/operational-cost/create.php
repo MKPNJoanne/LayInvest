@@ -4,12 +4,14 @@ use yii\widgets\ActiveForm;
 
 $this->title = 'Operational Cost Input';
 ?>
+<!-- Link CSS -->
+<link rel="stylesheet" href="<?= Yii::getAlias('@web/css/operational-cost-view.css') ?>">
 
 <div class="container mt-4">
     <div class="alert alert-info">
         Default values are based on 
         <a href="https://arts.cmb.ac.lk/wp-content/uploads/2024/07/CEJ_Vol-21_paper-8.pdf" target="_blank">
-            HARTI 2023 report
+           Hector Kobbekaduwa Agrarian Research and Training Institute, Colombo, Sri Lanka
         </a> with monthly increment applied.
     </div>
 
@@ -19,12 +21,15 @@ $this->title = 'Operational Cost Input';
         'method' => 'post',
     ]); ?>
 
-    <?= $form->field($model, 'start_date')->input('date', ['required' => true]) ?>
+    <?= $form->field($model, 'start_date')->input('date', ['required' => true,
+     'class' => 'form-control banner-bg']) ?>
 
     <?= $form->field($model, 'flock_size')->input('number', [
         'min' => 500,
         'max' => 5000,
-        'required' => true
+        'required' => true,
+        'placeholder' => 'Enter a number between 500–5000',
+         'class' => 'form-control banner-bg'
     ]) ?>
 
     <?= $form->field($model, 'cost_labor_override')->input('number', [
@@ -48,7 +53,7 @@ $this->title = 'Operational Cost Input';
     ])->label('Transport (LKR/egg)') ?>
 
     <div class="form-group mt-4">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-primary btn-lg']) ?>
+        <?= Html::submitButton('Save', ['class' => 'btn btn-success btn-lg']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
