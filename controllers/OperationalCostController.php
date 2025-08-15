@@ -53,7 +53,7 @@ class OperationalCostController extends Controller
                 $this->runCalculations($id, $model->start_date, (int)$model->flock_size);
 
                 Yii::$app->session->setFlash('success', 'Saved and calculated for 100 weeks.');
-                return $this->redirect(['result', 'scenario_id' => $id]);
+                return $this->redirect(['view', 'id' => $id]);
             }
         }
 
@@ -154,73 +154,140 @@ class OperationalCostController extends Controller
      * Results page with KPIs + lifecycle totals.
      */
     public function actionResult($scenario_id)
-    {
-        $scenario_id = (int)$scenario_id;
-        $db = Yii::$app->db;
+{
+    $scenario_id = (int)$scenario_id;
+    $db = Yii::$app->db;
 
-        // also fetch the scenario input (contains user overrides)
-        $input = (new \yii\db\Query())
-            ->from('oc.operational_cost_inputs')
-            ->where(['id' => $scenario_id])
-            ->one($db);
+    // Scenario input (with overrides)
+    $input = (new \yii\db\Query())
+        ->from('oc.operational_cost_inputs')
+        ->where(['id' => $scenario_id])
+        ->one($db);
 
+    // Summary
+    $summary = (new \yii\db\Query())
+        ->from('oc.scenario_egg_summary')
+        ->where(['scenario_id' => $scenario_id])
+        ->one($db);
 
-        $summary = (new \yii\db\Query())
-            ->from('oc.scenario_egg_summary')
-            ->where(['scenario_id' => $scenario_id])
-            ->one($db);
-
-        if (!$summary) {
-            throw new NotFoundHttpException('Summary not found. Please run calculation first.');
-        }
-
-        $weekly = (new \yii\db\Query())
-            ->from('oc.scenario_egg_production')
-            ->where(['scenario_id' => $scenario_id])
-            ->orderBy('week_no')
-            ->all($db);
-
-        $baseline = (new \yii\db\Query())
-            ->select(['cost_type', 'base_value', 'monthly_increment_pct'])
-            ->from('oc.oc_baselines')
-            ->indexBy('cost_type')
-            ->all($db);
-        $baseline = array_change_key_case($baseline, CASE_LOWER);
-
-        $totalCosts = (new \yii\db\Query())
-            ->select([
-                'eggs_total'           => 'SUM(eggs_total)',
-                'eggs_sellable'        => 'SUM(eggs_sellable)',
-                'labor_cost_lkr'       => 'SUM(labor_cost_lkr)',
-                'medicine_cost_lkr'    => 'SUM(medicine_cost_lkr)',
-                'transport_cost_lkr'   => 'SUM(transport_cost_lkr)',
-                'electricity_cost_lkr' => 'SUM(electricity_cost_lkr)',
-                'total_cost_lkr'       => 'SUM(total_cost_lkr)'
-            ])
-            ->from('oc.scenario_operational_costs')
-            ->where(['scenario_id' => $scenario_id])
-            ->one();
-
-        $week100 = (new \yii\db\Query())
-            ->from('oc.scenario_operational_costs')
-            ->where(['scenario_id' => $scenario_id, 'week_no' => 100])
-            ->one($db) ?: [];
-
-        $weeks    = array_column($weekly, 'week_no');
-        $laid     = array_map('intval', array_column($weekly, 'eggs_laid'));
-        $sellable = array_map('intval', array_column($weekly, 'eggs_sellable'));
-
-        return $this->render('result', [
-            'summary'     => $summary,
-            'weeks'       => $weeks,
-            'laid'        => $laid,
-            'sellable'    => $sellable,
-            'baseline'    => $baseline,
-            'week100'     => $week100,
-            'totalCosts'  => $totalCosts,
-            'input'       => $input,
-        ]);
+    if (!$summary) {
+        throw new NotFoundHttpException('Summary not found. Please run calculation first.');
     }
+
+    // Weekly data
+    $weekly = (new \yii\db\Query())
+        ->from('oc.scenario_egg_production')
+        ->where(['scenario_id' => $scenario_id])
+        ->orderBy('week_no')
+        ->all($db);
+
+    // Baselines
+    $baseline = (new \yii\db\Query())
+        ->select(['cost_type', 'base_value', 'monthly_increment_pct'])
+        ->from('oc.oc_baselines')
+        ->indexBy('cost_type')
+        ->all($db);
+    $baseline = array_change_key_case($baseline, CASE_LOWER);
+
+    // Totals (raw operational costs table)
+    $totalCosts = (new \yii\db\Query())
+        ->select([
+            'eggs_total'           => 'SUM(eggs_total)',
+            'eggs_sellable'        => 'SUM(eggs_sellable)',
+            'labor_cost_lkr'       => 'SUM(labor_cost_lkr)',
+            'medicine_cost_lkr'    => 'SUM(medicine_cost_lkr)',
+            'transport_cost_lkr'   => 'SUM(transport_cost_lkr)',
+            'electricity_cost_lkr' => 'SUM(electricity_cost_lkr)',
+            'total_cost_lkr'       => 'SUM(total_cost_lkr)'
+        ])
+        ->from('oc.scenario_operational_costs')
+        ->where(['scenario_id' => $scenario_id])
+        ->one();
+
+    // FEED breakdown
+    $feedByType = (new \yii\db\Query())
+        ->select([
+            'feed_type',
+            'kg'         => 'ROUND(SUM(feed_kg), 3)',
+            'wavg_price' => "ROUND(CASE WHEN SUM(feed_kg)>0 THEN SUM(cost_feed_lkr)/SUM(feed_kg) ELSE 0 END, 2)",
+            'cost'       => 'ROUND(SUM(cost_feed_lkr), 2)',
+            'wmin'       => 'MIN(week_no)',
+            'wmax'       => 'MAX(week_no)',
+        ])
+        ->from('oc.scenario_operational_costs')
+        ->where(['scenario_id' => $scenario_id])
+        ->andWhere('feed_kg IS NOT NULL')
+        ->groupBy('feed_type')
+        ->orderBy(new \yii\db\Expression('MIN(week_no)'))
+        ->all();
+
+    // FEED totals
+    $feedTotals = (new \yii\db\Query())
+        ->select([
+            'kg'   => 'ROUND(SUM(feed_kg), 3)',
+            'cost' => 'ROUND(SUM(cost_feed_lkr), 2)',
+        ])
+        ->from('oc.scenario_operational_costs')
+        ->where(['scenario_id' => $scenario_id])
+        ->one();
+
+    // DOC
+    $docCost = (new \yii\db\Query())
+        ->select(['ds','cost_doc_lkr' => 'ROUND(cost_doc_lkr,2)'])
+        ->from('oc.scenario_operational_costs')
+        ->where(['scenario_id' => $scenario_id, 'week_no' => 1])
+        ->one();
+
+    if ($docCost && !empty($docCost['ds'])) {
+        $docUnit = (new \yii\db\Query())
+            ->select(['unit_price_lkr' => 'value'])
+            ->from('oc.price_forecasts')
+            ->where([
+                'series_name' => 'doc_price',
+                'ds'          => $docCost['ds'],
+            ])
+            ->scalar();
+        $docCost['doc_price'] = $docUnit !== false ? (float)$docUnit : null;
+    }
+
+    // Weekly feed chart data
+    $weeklyFeed = (new \yii\db\Query())
+        ->select(['week_no','feed_kg','cost_feed_lkr'])
+        ->from('oc.scenario_operational_costs')
+        ->where(['scenario_id' => $scenario_id])
+        ->orderBy('week_no')
+        ->all();
+
+    // Grand summary from DB view
+    $grand = (new \yii\db\Query())
+        ->from('oc.vw_scenario_cost_summary')
+        ->where(['scenario_id' => $scenario_id])
+        ->one();
+
+    // === Force synced variables for all tables ===
+    $fixedCostTotal = (float)($grand['fixed_total_lkr'] ?? $totalCosts['total_cost_lkr'] ?? 0);
+    $feedDocTotal   = (float)($grand['feed_doc_total_lkr'] ?? 0);
+    $grandTotal     = (float)($grand['grand_total_lkr'] ?? ($fixedCostTotal + $feedDocTotal));
+
+    return $this->render('result', [
+        'summary'         => $summary,
+        'weeks'           => array_column($weekly, 'week_no'),
+        'laid'            => array_map('intval', array_column($weekly, 'eggs_laid')),
+        'sellable'        => array_map('intval', array_column($weekly, 'eggs_sellable')),
+        'baseline'        => $baseline,
+        'totalCosts'      => $totalCosts,
+        'input'           => $input,
+        'feedByType'      => $feedByType,
+        'feedTotals'      => $feedTotals,
+        'docCost'         => $docCost,
+        'weeklyFeed'      => $weeklyFeed,
+        'grand'           => $grand,
+        'fixedCostTotal'  => $fixedCostTotal, // synced
+        'feedDocTotal'    => $feedDocTotal,   // synced
+        'grandTotal'      => $grandTotal,     // synced
+    ]);
+}
+
 
     /**
      * Run SQL functions to populate scenario tables.
