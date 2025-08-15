@@ -5,56 +5,25 @@ use yii\helpers\Html;
 /** @var array $weeks */
 /** @var array $laid */
 /** @var array $sellable */
+/** @var array $totalCosts */
+/** @var array $baseline */
 
-$this->title = "Egg Production – 100 Weeks (Scenario #{$summary['scenario_id']})";
+$this->title = "Analysis in week 100 (Scenario #{$summary['scenario_id']})";
 ?>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
 <div class="container my-4">
-  <div class="d-flex align-items-center justify-content-between mb-3">
-    <!-- <h3 class="mb-0"><?= Html::encode($this->title) ?></h3> -->
-    <div>
-      <?= Html::a('Back', ['operational-cost/view', 'id' => $summary['scenario_id']], ['class' => 'btn btn-outline-secondary']) ?>
-    </div>
+  <div class="mb-3">
+    <?= Html::a('Back', ['operational-cost/view', 'id' => $summary['scenario_id']], ['class' => 'btn btn-outline-secondary']) ?>
   </div>
 
-  <?php if (Yii::$app->session->hasFlash('success')): ?>
-    <div class="alert alert-success"><?= Yii::$app->session->getFlash('success') ?></div>
-  <?php endif; ?>
-
-  <!-- KPI cards -->
+  <!-- KPI Cards -->
   <div class="row g-3 mb-4">
-    <div class="col-md-2">
-      <div class="card p-3 text-center">
-        <div class="small text-muted">Flock Size</div>
-        <div class="h4 mb-0"><?= number_format($summary['flock_size']) ?></div>
-      </div>
-    </div>
-    <div class="col-md-2">
-      <div class="card p-3 text-center">
-        <div class="small text-muted">Total Eggs (Laid)</div>
-        <div class="h4 mb-0"><?= number_format($summary['total_eggs_laid']) ?></div>
-      </div>
-    </div>
-    <div class="col-md-2">
-      <div class="card p-3 text-center">
-        <div class="small text-muted">Sellable Eggs</div>
-        <div class="h4 mb-0"><?= number_format($summary['total_eggs_sellable']) ?></div>
-      </div>
-    </div>
-    <div class="col-md-2">
-      <div class="card p-3 text-center">
-        <div class="small text-muted">Egg Losses</div>
-        <div class="h4 mb-0"><?= number_format($summary['total_egg_losses']) ?></div>
-      </div>
-    </div>
-    <div class="col-md-2">
-      <div class="card p-3 text-center">
-        <div class="small text-muted">Avg Lay % (100w)</div>
-        <div class="h4 mb-0"><?= number_format((float)$summary['avg_lay_pct'], 2) ?>%</div>
-      </div>
-    </div>
+    <div class="col-md-2"><div class="card p-3 text-center"><div class="small text-muted">Flock Size</div><div class="h4 mb-0"><?= number_format($summary['flock_size']) ?></div></div></div>
+    <div class="col-md-2"><div class="card p-3 text-center"><div class="small text-muted">Total Eggs (Laid)</div><div class="h4 mb-0"><?= number_format($summary['total_eggs_laid']) ?></div></div></div>
+    <div class="col-md-2"><div class="card p-3 text-center"><div class="small text-muted">Sellable Eggs</div><div class="h4 mb-0"><?= number_format($summary['total_eggs_sellable']) ?></div></div></div>
+    <div class="col-md-2"><div class="card p-3 text-center"><div class="small text-muted">Egg Losses</div><div class="h4 mb-0"><?= number_format($summary['total_egg_losses']) ?></div></div></div>
   </div>
 
   <!-- Chart -->
@@ -64,6 +33,54 @@ $this->title = "Egg Production – 100 Weeks (Scenario #{$summary['scenario_id']
       <canvas id="eggsChart"></canvas>
     </div>
   </div>
+
+  <!-- Lifecycle Cost Table -->
+  <div class="card p-4 mb-4 shadow-sm border-0">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">Lifecycle Fixed Costs Overview <small class="text-muted">(LKR)</small></h5>
+        <span class="badge bg-secondary">100 Weeks</span>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Cost Type</th>
+                    <th>Baseline Rate (LKR/egg)</th>
+                    <th>Total Eggs</th>
+                    <th>Sellable Eggs</th>
+                    <th>Total Cost (LKR)</th>
+                </tr>
+            </thead>
+            <tbody>
+              <?php foreach (['labor', 'medicine', 'transport', 'electricity'] as $type): ?>
+                <?php
+                  // dynamic override field name like cost_labor_override
+                  $overrideField = "cost_{$type}_override";
+                  $rate = (isset($input[$overrideField]) && $input[$overrideField] !== null)
+                    ? (float)$input[$overrideField]                 // user-provided rate
+                    : (float)$baseline[$type]['base_value'];        // fallback to default
+                ?>
+                <tr>
+                  <td><?= ucfirst($type) ?></td>
+                  <td><?= number_format($rate, 3) ?></td>               <!-- Baseline Rate col now shows override if present -->
+                  <td><?= number_format($totalCosts['eggs_total']) ?></td>
+                  <td><?= number_format($totalCosts['eggs_sellable']) ?></td>
+                  <td><?= number_format($totalCosts[$type . '_cost_lkr'], 2) ?></td>
+                </tr>
+              <?php endforeach; ?>
+            </tbody>
+            <tfoot class="fw-bold table-secondary">
+                <tr>
+                    <td>Total</td>
+                    <td>-</td>
+                    <td><?= number_format($totalCosts['eggs_total']) ?></td>
+                    <td><?= number_format($totalCosts['eggs_sellable']) ?></td>
+                    <td><?= number_format($totalCosts['total_cost_lkr'], 2) ?></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
 </div>
 
 <script>
@@ -87,10 +104,6 @@ new Chart(document.getElementById('eggsChart').getContext('2d'), {
     scales: {
       x: { title: { display: true, text: 'Week' } },
       y: { title: { display: true, text: 'Eggs' }, beginAtZero: true }
-    },
-    plugins: {
-      legend: { position: 'top' },
-      tooltip: { mode: 'index', intersect: false }
     }
   }
 });
