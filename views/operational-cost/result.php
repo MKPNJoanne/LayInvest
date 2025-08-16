@@ -49,7 +49,7 @@ $fmt3 = fn($v) => number_format((float)($v ?? 0), 3);
   <!-- Fixed Costs -->
   <div class="card p-4 mb-4 shadow-sm border-0">
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h5 class="mb-0">Fixed Costs Overview for 100 weeks <small class="text-muted">(LKR)</small></h5>
+      <h5 class="mb-0">Fixed Costs Overview for 100 weeks <small class="text-muted">(LKR) *Note: monthly increment has been added to the Fixed Costs rate</small></h5>
       <span class="badge bg-secondary">100 Weeks</span>
     </div>
 
@@ -130,13 +130,13 @@ $fmt3 = fn($v) => number_format((float)($v ?? 0), 3);
             <td class="text-end"><?= $fmt3($feedTotals['kg']) ?></td>
             <td class="text-end">—</td>
             <td class="text-end"><?= $fmt2($feedTotals['cost']) ?></td>
+            
           </tr>
           <tr>
-            <td colspan="4">
-              DOC one time Purchase (Week 1<?= isset($docCost['ds']) ? ', ' . htmlspecialchars($docCost['ds']) : '' ?>)
-              <?php if (!empty($docCost['doc_price'])): ?>
-                <small class="text-muted">(<?= $fmt2($docCost['doc_price']) ?> LKR/bird)</small>
-              <?php endif; ?>
+           <td colspan="4" class="small text-muted">
+              DOC one time Purchase (Week <?= $docCost['week_no'] ?? 1 ?>,
+                <?= $docCost['ds'] ?? '' ?>):
+              <?= $fmt2(v: $docForecast['doc_price'] ?? 0) ?> LKR
             </td>
             <td class="text-end"><?= $fmt2($docCost['cost_doc_lkr']) ?></td>
           </tr>
@@ -153,7 +153,7 @@ $fmt3 = fn($v) => number_format((float)($v ?? 0), 3);
   <!-- Operational Cost Summary -->
   <div class="card p-4 mb-4 shadow-sm border-0">
     <div class="d-flex justify-content-between align-items-center mb-2">
-      <h5 class="mb-0">Operational Cost Summary (100 Weeks)</h5>
+      <h5 class="mb-0">Estimated Operational Cost Summary (100 Weeks)</h5>
       <span class="badge bg-dark">Summary</span>
     </div>
 
@@ -178,7 +178,7 @@ $fmt3 = fn($v) => number_format((float)($v ?? 0), 3);
         </tbody>
         <tfoot class="fw-bold table-dark">
           <tr>
-            <td>Estimated Operational Cost for 100 Weeks</td>
+            <td>Estimated Operational Cost for 100 Weeks span</td>
             <!--  Derived once in controller -->
             <td class="text-end"><?= $fmt2($grandTotal) ?></td>
           </tr>
