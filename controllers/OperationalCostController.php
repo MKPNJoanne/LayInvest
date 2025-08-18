@@ -47,7 +47,7 @@ class OperationalCostController extends Controller
 
             $id = (int)Yii::$app->db->getLastInsertID();
 
-            // 🔹 Call population functions so feed + DOC costs are stored
+            // Call population functions so feed + DOC costs are stored
             Yii::$app->db->createCommand("
                 SELECT oc.populate_scenario_feed_costs(:sid, :start_date, :flock);
             ")->bindValues([
@@ -64,9 +64,19 @@ class OperationalCostController extends Controller
                 ':flock'      => (int)$model->flock_size,
             ])->execute();
 
-            // If you have one for other costs later:
-            // Yii::$app->db->createCommand("SELECT oc.populate_scenario_other_costs(:sid, :start_date, :flock);")
-            //     ->bindValues([...])->execute();
+            // Populate full scenario (includes feed, labor, medicine, etc.)
+            Yii::$app->db->createCommand("
+                SELECT oc.populate_full_scenario(:sid);
+            ")->bindValues([
+                ':sid' => $id,
+            ])->execute();
+
+            // Optional: fetch break-even weeks directly
+            // $breakEvenWeeks = Yii::$app->db->createCommand("
+            //     SELECT * FROM oc.get_break_even_weeks(:sid);
+            // ")->bindValues([
+            //     ':sid' => $id,
+            // ])->queryAll();
 
             // Run your existing calculation wrapper (if needed for totals)
             $this->runCalculations($id, $model->start_date, (int)$model->flock_size);
@@ -399,6 +409,15 @@ class OperationalCostController extends Controller
         $db->createCommand("SELECT oc.populate_scenario_operational_costs(:sid)")
             ->bindValue(':sid', $scenarioId)
             ->execute();
+        // 6) full scenario (feed + DOC + fixed + totals)
+        $db->createCommand("SELECT oc.populate_full_scenario(:sid)")
+            ->bindValue(':sid', $scenarioId)
+            ->execute();
+
+        // 7) optional: break-even weeks
+        // $breakEvenWeeks = $db->createCommand("SELECT * FROM oc.get_break_even_weeks(:sid)")
+        //     ->bindValue(':sid', $scenarioId)
+        //     ->queryAll();
 
         $tx->commit();
     } catch (\Throwable $e) {

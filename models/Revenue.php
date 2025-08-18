@@ -14,6 +14,10 @@ class Revenue extends Model
     public $cumulative_egg_revenue;
     public $cumulative_cull_revenue;
     public $cumulative_total_revenue;
+    public $cum_profit_eggs;
+    public $cum_margin_eggs;
+    public $cum_profit_with_cull;
+    public $cum_margin_with_cull;
 
     public function rules()
     {
@@ -26,7 +30,11 @@ class Revenue extends Model
                 'total_weekly_revenue',
                 'cumulative_egg_revenue',
                 'cumulative_cull_revenue',
-                'cumulative_total_revenue'
+                'cumulative_total_revenue',
+                'cum_profit_eggs',
+                'cum_margin_eggs',
+                'cum_profit_with_cull',
+                'cum_margin_with_cull'
             ], 'number'],
         ];
     }
@@ -42,6 +50,10 @@ class Revenue extends Model
             'cumulative_egg_revenue' => 'Cumulative Egg Revenue (LKR)',
             'cumulative_cull_revenue' => 'Cumulative Cull Revenue (LKR)',
             'cumulative_total_revenue' => 'Cumulative Total Revenue (LKR)',
+            'cum_profit_eggs' => 'Cumulative Profit (Eggs)',
+            'cum_margin_eggs' => 'Margin % (Eggs)',
+            'cum_profit_with_cull' => 'Cumulative Profit (Eggs + Cull)',
+            'cum_margin_with_cull' => 'Margin % (Eggs + Cull)',
         ];
     }
 }

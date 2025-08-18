@@ -171,6 +171,99 @@ html, body{
   /* background: #fff; */
   transition: all 0.2s ease;
 }
+/* ===== Dashboard polish / overrides ===== */
+
+/* Layout: balanced grid, consistent gaps (also kills random spacing) */
+.profit-breakdown { margin-top: 24px; }
+.profit-row { display: grid; grid-template-columns: repeat(12, 1fr); gap: 18px; }
+.profit-row > .col-md-6 { grid-column: span 6; display: flex; }
+@media (max-width: 992px){ .profit-row > .col-md-6 { grid-column: span 12; } }
+
+/* Card – softer look, crisp borders, tighter spacing */
+.profit-card{
+  border: 1px solid #e7e7e7;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(0,0,0,.06);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.profit-card:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(0,0,0,.08);
+}
+.profit-card .card-header{
+  padding: 12px 16px;
+  border-bottom: 1px solid #ececec;
+  font-weight: 700;
+  letter-spacing: .2px;
+}
+
+/* Brand headers (gentle gradients for hierarchy) */
+.card-revenue .card-header{
+  color: #0f5132;
+  background: linear-gradient(180deg,#eaf7ec 0%, #e3f3e6 100%);
+}
+.card-cogs .card-header{
+  color: #8a5300;
+  background: linear-gradient(180deg,#fff5d8 0%, #ffefc7 100%);
+}
+.card-gross-profit .card-header{
+  color: #0b3c5d;
+  background: linear-gradient(180deg,#e7f1ff 0%, #dff0ff 100%);
+}
+.card-margin .card-header{
+  color: #163aef;
+  background: linear-gradient(180deg,#e9edff 0%, #e2e7ff 100%);
+}
+
+/* Body */
+.profit-card .card-body{ padding: 16px 18px; }
+
+/* Metric rows – perfectly aligned, readable */
+.metric{
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px dashed #eee;
+}
+.metric:last-child{ border-bottom: 0; }
+.metric__label{ color: #5f6368; font-size: 14px; }
+.metric__value{ font-weight: 600; font-feature-settings: "tnum"; }
+
+/* Totals stand out */
+.metric--total{ margin-top: 10px; }
+.metric--total .metric__label{ color:#101112; font-weight: 700; text-transform: none; }
+.metric--total .metric__value{ font-size: 18px; }
+
+/* Big number tiles */
+.stat{
+  text-align:center;
+  padding: 20px 18px;
+}
+.stat__label{ color:#566; font-weight:600; margin-bottom:6px; }
+.stat__value{
+  font-weight: 800;
+  font-size: clamp(20px, 3vw, 28px);
+  letter-spacing:.2px;
+}
+
+/* Cost-per-egg cards */
+.card-cost-egg .card-header{
+  color:#111;
+  background: linear-gradient(180deg,#f1f3f5 0%, #eef1f4 100%);
+}
+.formula{
+  color:#6b7280;
+  font-size: 13px;
+  margin-top: 6px;
+  text-align:center;
+}
+
+/* Fix odd extra space some themes add below rows */
+.row + .row{ margin-top: 18px; }
+
 
 /* Hover */
 .pagination li a:hover {
