@@ -49,7 +49,7 @@ $fmt3 = fn($v) => number_format((float)($v ?? 0), 3);
   <!-- Fixed Costs -->
   <div class="card p-4 mb-4 shadow-sm border-0">
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <h5 class="mb-0">Fixed Costs Overview for 100 weeks <small class="text-muted">(LKR) *Note: monthly increment has been added to the Fixed Costs rate</small></h5>
+      <h5 class="mb-0">Fixed Costs Overview for 100 weeks <small class="text-muted">(LKR) *Note: default values are taken from HARTI</small></h5>
       <span class="badge bg-secondary">100 Weeks</span>
     </div>
 
@@ -190,7 +190,7 @@ $fmt3 = fn($v) => number_format((float)($v ?? 0), 3);
       <div class="row text-center mt-2">
         <div class="col-md-4">
           <div class="small text-muted">Total Sellable Eggs</div>
-          <div class="h5 mb-0"><?= number_format($grand['eggs_sellable']) ?></div>
+          <div class="h5 mb-0"><?= number_format($totalCosts['eggs_sellable']) ?></div>
         </div>
         <div class="col-md-4">
           <div class="small text-muted">Cost / Sellable Egg</div>

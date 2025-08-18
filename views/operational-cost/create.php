@@ -9,10 +9,10 @@ $this->title = 'Operational Cost Input';
 
 <div class="container mt-4">
     <div class="alert alert-info">
-        Default values are based on 
+        Default values are based on the values LKR/egg given in the
         <a href="https://arts.cmb.ac.lk/wp-content/uploads/2024/07/CEJ_Vol-21_paper-8.pdf" target="_blank">
            Hector Kobbekaduwa Agrarian Research and Training Institute, Colombo, Sri Lanka
-        </a> with monthly increment applied.
+        </a> 
     </div>
 
     <?php $form = ActiveForm::begin([
@@ -21,7 +21,10 @@ $this->title = 'Operational Cost Input';
         'method' => 'post',
     ]); ?>
 
-    <?= $form->field($model, 'start_date')->input('date', ['required' => true]) ?>
+    <?= $form->field($model, 'start_date')->input('date', [
+    'required' => true,
+    'min' => Yii::$app->formatter->asDate('now', 'php:Y-m-d'), // blocks past dates & months
+    ]) ?>
 
     <?= $form->field($model, 'flock_size')->input('number', [
         'min' => 500,

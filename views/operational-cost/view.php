@@ -17,7 +17,7 @@ $this->title = "Operational Cost Input #{$model['id']}";
         Default values are based on 
         <a href="https://arts.cmb.ac.lk/wp-content/uploads/2024/07/CEJ_Vol-21_paper-8.pdf" target="_blank">
             Hector Kobbekaduwa Agrarian Research and Training Institute , 2023 report
-        </a> with monthly increment applied.
+        </a> 
     </div>
 
     <!-- Flock Details -->

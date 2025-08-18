@@ -18,7 +18,22 @@ class OperationalCostInput extends ActiveRecord
             [['start_date', 'flock_size'], 'required'],
             [['flock_size'], 'integer', 'min' => 500, 'max' => 5000],
             [['cost_labor_override', 'cost_medicine_override', 'cost_electricity_override', 'cost_transport_override'], 'number'],
+            ['start_date', 'date', 'format' => 'php:Y-m-d'],
+            ['start_date', 'validateNotPast'], 
         ];
+    }
+
+    public function validateNotPast($attribute, $params = [])
+    {
+        if (empty($this->$attribute)) return;
+
+        $tz = new \DateTimeZone(Yii::$app->timeZone ?: 'Asia/Colombo');
+        $picked = \DateTime::createFromFormat('Y-m-d', $this->$attribute, $tz);
+        $today  = new \DateTime('today', $tz);
+
+        if (!$picked || $picked < $today) {
+            $this->addError($attribute, 'Date cannot be in the past.');
+        }
     }
 
    public $space_sqft; // virtual, not in DB
@@ -73,6 +88,7 @@ class OperationalCostInput extends ActiveRecord
     }
     return false;
 }
+
 
 
 
