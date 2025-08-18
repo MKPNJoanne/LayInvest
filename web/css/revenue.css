@@ -42,6 +42,22 @@ html, body{
 }
 
 /* ---- KPI ---- */
+
+/* Auto-fit KPI cards to content */
+.kpis{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 18px 0 26px;
+}
+
+/* Slightly tighter KPI style so cards look smaller */
+.kpi.kpi--compact{
+  padding: 14px 16px;
+}
+.kpi.kpi--compact .label{ font-size: 12px; }
+.kpi.kpi--compact .value{ font-size: 22px; }
+
 .kpis{
   display: grid;
   grid-template-columns: repeat(12, 1fr);

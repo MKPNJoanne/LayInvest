@@ -52,7 +52,7 @@ $grandTotal       = $totalEggRevenue + $totalCullRevenue;
     </div>
 
     <div class="kpi black">
-      <div class="label">Grand Total Revenue</div>
+      <div class="label">Total Revenue (Egg + Cull)</div>
       <div class="value"><?= number_format($grandTotal, 2) ?> LKR</div>
     </div>
   </div>
@@ -110,7 +110,7 @@ $grandTotal       = $totalEggRevenue + $totalCullRevenue;
   <!-- Cull Revenue Table -->
   <div class="table-card mt-5">
     <div class="card-head">
-      <h3>Cull Revenue (Week 100)</h3>
+      <h3>Projected Cull Revenue (Week 100)</h3>
     </div>
     <div class="table-wrap">
       <?php if ($cullRow): ?>
