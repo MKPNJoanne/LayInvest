@@ -18,6 +18,9 @@ use yii\helpers\Html;
 /** @var float $grandTotal */
 
 $this->title = "Cost Analysis for 100 week Lifecycle";
+$this->registerCssFile('@web/css/revenue.css', [
+    'depends' => [\yii\bootstrap5\BootstrapAsset::class],
+]);
 
 $fmt2 = fn($v) => number_format((float)($v ?? 0), 2);
 $fmt3 = fn($v) => number_format((float)($v ?? 0), 3);
@@ -25,37 +28,72 @@ $fmt3 = fn($v) => number_format((float)($v ?? 0), 3);
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
-<div class="container my-4">
+<div class="page-section">
+
+  <!-- Back Button -->
   <div class="mb-3">
-    <?= Html::a('Back', ['operational-cost/view', 'id' => $summary['scenario_id']], ['class' => 'btn btn-outline-secondary']) ?>
+    <?= Html::a('← Back', ['operational-cost/view', 'id' => $summary['scenario_id']], ['class' => 'btn btn-outline-secondary']) ?>
   </div>
 
-  <!-- KPI Cards -->
-  <div class="row g-3 mb-4">
-    <div class="col-md-2"><div class="card p-3 text-center"><div class="small text-muted">Flock Size</div><div class="h4 mb-0"><?= number_format($summary['flock_size']) ?></div></div></div>
-    <div class="col-md-2"><div class="card p-3 text-center"><div class="small text-muted">Total Eggs (Laid)</div><div class="h4 mb-0"><?= number_format($summary['total_eggs_laid']) ?></div></div></div>
-    <div class="col-md-2"><div class="card p-3 text-center"><div class="small text-muted">Sellable Eggs</div><div class="h4 mb-0"><?= number_format($summary['total_eggs_sellable']) ?></div></div></div>
-    <div class="col-md-2"><div class="card p-3 text-center"><div class="small text-muted">Egg Losses</div><div class="h4 mb-0"><?= number_format($summary['total_egg_losses']) ?></div></div></div>
+  <!-- KPI Row -->
+  <div class="kpis">
+    <div class="kpi kpi--compact">
+      <div class="label">Flock Size</div>
+      <div class="value"><?= number_format($summary['flock_size']) ?></div>
+    </div>
+
+    <div class="kpi kpi--compact">
+      <div class="label">Total Eggs (Laid) in 100 Weeks</div>
+      <div class="value"><?= number_format($summary['total_eggs_laid']) ?></div>
+    </div>
+
+    <div class="kpi kpi--compact">
+      <div class="label">Sellable Eggs</div>
+      <div class="value"><?= number_format($summary['total_eggs_sellable']) ?></div>
+    </div>
+
+    <div class="kpi kpi--compact">
+      <div class="label">Egg Losses</div>
+      <div class="value"><?= number_format($summary['total_egg_losses']) ?></div>
+    </div>
+
+    <!-- NEW: cost KPIs -->
+    <div class="kpi kpi--compact">
+      <div class="label">Fixed Cost (100 Weeks)</div>
+      <div class="value"><?= $fmt2($fixedCostTotal) ?> LKR</div>
+    </div>
+
+    <!-- <div class="kpi kpi--compact">
+      <div class="label">Feed + DOC Cost</div>
+      <div class="value"><?= $fmt2($feedDocTotal) ?> LKR</div>
+    </div> -->
+
+    <div class="kpi kpi--compact">
+      <div class="label">Estimated Operational Cost</div>
+      <div class="value"><?= $fmt2($grandTotal) ?> LKR</div>
+    </div>
   </div>
 
-  <!-- Chart: Eggs -->
-  <div class="card mb-4 p-3">
-    <div class="small text-muted mb-2">Weekly Eggs (Laid vs Sellable)</div>
-    <div style="height:400px;">
+  <!-- Chart -->
+  <div class="table-card mb-4">
+    <div class="card-head">
+      <h3>Weekly Eggs (Laid vs Sellable)</h3>
+      <span class="meta">100 Weeks</span>
+    </div>
+    <div class="p-3" style="height:400px;">
       <canvas id="eggsChart"></canvas>
     </div>
   </div>
 
   <!-- Fixed Costs -->
-  <div class="card p-4 mb-4 shadow-sm border-0">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h5 class="mb-0">Fixed Costs Overview for 100 weeks <small class="text-muted">(LKR) *Note: default values are taken from HARTI</small></h5>
-      <span class="badge bg-secondary">100 Weeks</span>
+  <div class="table-card mb-4">
+    <div class="card-head">
+      <h3>Fixed Costs Overview (100 Weeks)</h3>
+      <span class="meta">Values in LKR (HARTI baseline)</span>
     </div>
-
-    <div class="table-responsive">
-      <table class="table table-hover align-middle">
-        <thead class="table-light">
+    <div class="table-wrap">
+      <table class="table-modern">
+        <thead>
           <tr>
             <th>Cost Type</th>
             <th>Rate (LKR/egg)</th>
@@ -81,13 +119,12 @@ $fmt3 = fn($v) => number_format((float)($v ?? 0), 3);
             </tr>
           <?php endforeach; ?>
         </tbody>
-        <tfoot class="fw-bold table-secondary">
-          <tr>
+        <tfoot>
+          <tr class="fw-bold">
             <td>Total</td>
             <td>-</td>
             <td><?= number_format($totalCosts['eggs_total']) ?></td>
             <td><?= number_format($totalCosts['eggs_sellable']) ?></td>
-            <!-- Use the SAME synced total everywhere -->
             <td><?= $fmt2($fixedCostTotal) ?></td>
           </tr>
         </tfoot>
@@ -95,22 +132,21 @@ $fmt3 = fn($v) => number_format((float)($v ?? 0), 3);
     </div>
   </div>
 
-  <!-- Feed & DOC Costs -->
-  <div class="card p-4 mb-4 shadow-sm border-0">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-      <h5 class="mb-0">Feed & DOC Costs Overview</h5>
-      <span class="badge bg-secondary">100 Weeks</span>
+  <!-- Feed & DOC -->
+  <div class="table-card mb-4">
+    <div class="card-head">
+      <h3>Feed & DOC Costs Overview</h3>
+      <span class="meta">100 Weeks</span>
     </div>
-
-    <div class="table-responsive">
-      <table class="table table-hover align-middle">
-        <thead class="table-light">
+    <div class="table-wrap">
+      <table class="table-modern">
+        <thead>
           <tr>
             <th>Feed Type</th>
             <th>Weeks</th>
-            <th class="text-end">Total Feed (kg)</th>
-            <th class="text-end">Weighted Price (LKR/kg)</th>
-            <th class="text-end">Total Feed Cost (LKR)</th>
+            <th>Total Feed (kg)</th>
+            <th>Weighted Price (LKR/kg)</th>
+            <th>Total Feed Cost (LKR)</th>
           </tr>
         </thead>
         <tbody>
@@ -118,92 +154,69 @@ $fmt3 = fn($v) => number_format((float)($v ?? 0), 3);
             <tr>
               <td><?= ucfirst($row['feed_type']) ?></td>
               <td><?= (int)$row['wmin'] ?>–<?= (int)$row['wmax'] ?></td>
-              <td class="text-end"><?= $fmt3($row['kg']) ?></td>
-              <td class="text-end"><?= $fmt2($row['wavg_price']) ?></td>
-              <td class="text-end"><?= $fmt2($row['cost']) ?></td>
+              <td><?= $fmt3($row['kg']) ?></td>
+              <td><?= $fmt2($row['wavg_price']) ?></td>
+              <td><?= $fmt2($row['cost']) ?></td>
             </tr>
           <?php endforeach; ?>
         </tbody>
-        <tfoot class="fw-bold">
-          <tr class="table-secondary">
-            <td colspan="2">Total Feed Cost</td>
-            <td class="text-end"><?= $fmt3($feedTotals['kg']) ?></td>
-            <td class="text-end">—</td>
-            <td class="text-end"><?= $fmt2($feedTotals['cost']) ?></td>
-            
-          </tr>
-          <tr>
-           <td colspan="4" class="small text-muted">
-              DOC one time Purchase (Week <?= $docCost['week_no'] ?? 1 ?>,
-                <?= $docCost['ds'] ?? '' ?>):
-              <?= $fmt2(v: $docForecast['doc_price'] ?? 0) ?> LKR
-            </td>
-            <td class="text-end"><?= $fmt2($docCost['cost_doc_lkr']) ?></td>
-          </tr>
-          <!-- Total Feed + DOC from controller (synced) -->
-          <tr class="table-dark">
-            <td colspan="4">Feed + Day Old Chick Cost</td>
-            <td class="text-end"><?= $fmt2($feedDocTotal) ?></td>
-          </tr>
-        </tfoot>
+        <tfoot>
+        <tr>
+          <td colspan="3">Total Feed Cost</td>
+          <td></td>
+          <td><?= $fmt2($feedTotals['cost']) ?></td>
+        </tr>
+        <tr>
+          <td colspan="4" class="muted">
+            DOC Purchase (Week <?= $docCost['week_no'] ?? 1 ?>, <?= $docCost['ds'] ?? '' ?>):
+            <?= $fmt2($docForecast['doc_price'] ?? 0) ?> LKR
+          </td>
+          <td><?= $fmt2($docCost['cost_doc_lkr']) ?></td>
+        </tr>
+        <tr class="fw-bold">
+          <td colspan="4">Feed + Day Old Chick Cost</td>
+          <td><?= $fmt2($feedDocTotal) ?></td>
+        </tr>
+      </tfoot>
       </table>
     </div>
   </div>
 
-  <!-- Operational Cost Summary -->
-  <div class="card p-4 mb-4 shadow-sm border-0">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-      <h5 class="mb-0">Estimated Operational Cost Summary (100 Weeks)</h5>
-      <span class="badge bg-dark">Summary</span>
+  <!-- Cost Summary -->
+  <div class="table-card mb-4">
+    <div class="card-head">
+      <h3>Estimated Operational Cost Summary (100 Weeks)</h3>
     </div>
-
-    <div class="table-responsive">
-      <table class="table table-hover align-middle">
-        <thead class="table-light">
+    <div class="table-wrap">
+      <table class="table-modern">
+        <thead>
           <tr>
             <th>Bucket</th>
-            <th class="text-end">Amount (LKR)</th>
+            <th>Amount (LKR)</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>Fixed Costs (Labor + Medicine + Transport + Electricity)</td>
-            <!-- Same number as Fixed table footer -->
-            <td class="text-end"><?= $fmt2($fixedCostTotal) ?></td>
+            <td>Fixed Costs (Labor, Medicine, Transport, Electricity)</td>
+            <td><?= $fmt2($fixedCostTotal) ?></td>
           </tr>
           <tr>
             <td>Feed + DOC</td>
-            <td class="text-end"><?= $fmt2($feedDocTotal) ?></td>
+            <td><?= $fmt2($feedDocTotal) ?></td>
           </tr>
         </tbody>
-        <tfoot class="fw-bold table-dark">
-          <tr>
-            <td>Estimated Operational Cost for 100 Weeks span</td>
-            <!--  Derived once in controller -->
-            <td class="text-end"><?= $fmt2($grandTotal) ?></td>
+        <tfoot>
+          <tr class="fw-bold">
+            <td>Estimated Total Operational Cost</td>
+            <td><?= $fmt2($grandTotal) ?></td>
           </tr>
         </tfoot>
       </table>
     </div>
-
-    <?php if (!empty($grand['eggs_sellable'])): ?>
-      <div class="row text-center mt-2">
-        <div class="col-md-4">
-          <div class="small text-muted">Total Sellable Eggs</div>
-          <div class="h5 mb-0"><?= number_format($totalCosts['eggs_sellable']) ?></div>
-        </div>
-        <div class="col-md-4">
-          <div class="small text-muted">Cost / Sellable Egg</div>
-          <div class="h5 mb-0"><?= $fmt2($grandTotal / max(1, (float)$grand['eggs_sellable'])) ?></div>
-        </div>
-        <div class="col-md-4">
-          <div class="small text-muted">Cost / Laid Egg</div>
-          <div class="h5 mb-0"><?= $fmt2($grandTotal / max(1, (float)$grand['eggs_total'])) ?></div>
-        </div>
-      </div>
-    <?php endif; ?>
   </div>
+
 </div>
+
 
 <script>
 const weeks    = <?= json_encode(array_values($weeks)) ?>;

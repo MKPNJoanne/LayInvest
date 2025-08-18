@@ -54,6 +54,7 @@ $config = [
                 // Existing shortcuts
                 'operational-cost' => 'operational-cost/create',
                 'operational-cost/<id:\d+>' => 'operational-cost/view',
+                'revenue/<id:\d+>' => 'revenue/view',
 
                 // NEW: allowing any action on OperationalCostController
                 'operational-cost/<action:\w+>' => 'operational-cost/<action>',
