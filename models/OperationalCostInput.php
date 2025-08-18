@@ -17,7 +17,10 @@ class OperationalCostInput extends ActiveRecord
         return [
             [['start_date', 'flock_size'], 'required'],
             [['flock_size'], 'integer', 'min' => 500, 'max' => 5000],
-            [['cost_labor_override', 'cost_medicine_override', 'cost_electricity_override', 'cost_transport_override'], 'number'],
+            [
+            ['cost_labor_override', 'cost_medicine_override', 'cost_electricity_override', 'cost_transport_override'],
+            'number', 'min' => 0  // no negative values
+            ],
             ['start_date', 'date', 'format' => 'php:Y-m-d'],
             ['start_date', 'validateNotPast'], 
         ];

@@ -35,22 +35,26 @@ $this->title = 'Operational Cost Input';
 
     <?= $form->field($model, 'cost_labor_override')->input('number', [
         'placeholder' => $defaults['labor']['base_value'] ?? '',
-        'step' => '0.001'
+        'step' => '0.001',
+        'min' => 0
     ])->label('Labor (LKR/egg)') ?>
 
     <?= $form->field($model, 'cost_electricity_override')->input('number', [
         'placeholder' => $defaults['electricity']['base_value'] ?? '',
-        'step' => '0.001'
+        'step' => '0.001',
+        'min' => 0
     ])->label('Electricity (LKR/egg)') ?>
 
     <?= $form->field($model, 'cost_medicine_override')->input('number', [
         'placeholder' => $defaults['medicine']['base_value'] ?? '',
-        'step' => '0.001'
+        'step' => '0.001',
+        'min' => 0
     ])->label('Medicine (LKR/egg)') ?>
 
     <?= $form->field($model, 'cost_transport_override')->input('number', [
         'placeholder' => $defaults['transport']['base_value'] ?? '',
-        'step' => '0.001'
+        'step' => '0.001',
+        'min' => 0
     ])->label('Transport (LKR/egg)') ?>
 
     <div class="form-group mt-4">
