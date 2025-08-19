@@ -32,11 +32,12 @@ $this->registerCsrfMetaTags();
         <ul>
     <li><?= Html::a('<i class="fas fa-chart-pie"></i> Overview', ['dashboard/index']) ?></li>
     <li><?= Html::a('<i class="fas fa-chart-line"></i> Operational Cost Analysis', ['operational-cost/create']) ?></li>
-    <li class="nav-item">
-    <a class="nav-link <?= Yii::$app->controller->id === 'revenue' ? 'active' : '' ?>" 
-        href="<?= \yii\helpers\Url::to(['revenue/view']) ?>">
-        <span class="me-2">💰</span> Revenue
-    </a>
+    <li>
+    <?= Html::a(
+        '<i class="fas fa-dollar-sign"></i> Revenue & Break-even Analysis',
+        ['revenue/view'],
+        ['class' => 'nav-link ' . (Yii::$app->controller->id === 'revenue' ? 'active' : '')]
+    ) ?>
     </li>
     <li><?= Html::a('<i class="fas fa-list"></i> Summary', ['summary/index']) ?></li>
         </ul>
