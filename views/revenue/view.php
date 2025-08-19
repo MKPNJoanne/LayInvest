@@ -35,7 +35,7 @@ $grandTotal       = $grand['total'];
 
   <!-- KPI Cards -->
   <div class="kpis">
-    <div class="kpi blue">
+    <div class="kpi ">
       <div class="label">Total Egg Revenue</div>
       <div class="value"><?= number_format($totalEggRevenue, 2) ?> LKR</div>
     </div>
@@ -45,29 +45,29 @@ $grandTotal       = $grand['total'];
       <div class="value"><?= number_format($totalCullRevenue, 2) ?> LKR</div>
     </div>
 
-    <div class="kpi black">
+    <div class="kpi ">
       <div class="label">Total Revenue (Egg + Cull)</div>
       <div class="value"><?= number_format($grandTotal, 2) ?> LKR</div>
     </div>
 
-    <div class="kpi orange">
+    <div class="kpi green">
       <div class="label">Break-even (Eggs only)</div>
       <div class="value"><?= $breakEven['break_even_eggs'] ?: 'N/A' ?> week</div>
     </div>
 
-    <div class="kpi purple">
+    <!-- <div class="kpi purple">
       <div class="label">Break-even (With Cull)</div>
       <div class="value"><?= $breakEven['break_even_with_cull'] ?: 'N/A' ?> week</div>
-    </div>
+    </div> -->
 
     <?php if ($finalRow): ?>
-    <div class="kpi yellow">
+    <div class="kpi ">
       <div class="label">Gross Profit (Eggs only)</div>
       <div class="value"><?= number_format($finalRow['cum_profit_eggs'], 2) ?> LKR</div>
       
     </div>
 
-    <div class="kpi teal">
+    <div class="kpi green">
       <div class="label">Gross Profit (With Cull)</div>
       <div class="value"><?= number_format($finalRow['cum_profit_with_cull'], 2) ?> LKR</div>
      
@@ -160,103 +160,112 @@ $grandTotal       = $grand['total'];
 
 <div class="container mt-5">
 
-    <!-- Title -->
-    <div class="mb-4">
-        <h3 class="fw-bold">Profit Breakdown</h3>
-    </div>
+
 
     <!-- Revenue Section -->
-    <div class="row g-4">
-        <div class="col-md-6">
-            <div class="card shadow border-success">
-                <div class="card-header bg-success text-white fw-bold">Revenue</div>
-                <div class="card-body">
-                    <p>Egg Revenue: <span class="float-end"><?= number_format($totalEggRevenue, 2) ?> LKR</span></p>
-                    <p>Cull Revenue: <span class="float-end"><?= number_format($totalCullRevenue, 2) ?> LKR</span></p>
-                    <hr>
-                    <h5 class="fw-bold">Total Revenue 
-                        <span class="float-end"><?= number_format($totalRevenue, 2) ?> LKR</span>
-                    </h5>
-                </div>
-            </div>
-        </div>
 
-        <!-- COGS Section -->
-        <div class="col-md-6">
-            <div class="card shadow border-warning">
-                <div class="card-header bg-warning fw-bold">Operational Costs (COGS)</div>
-                <div class="card-body">
-                    <p>Feed Cost: <span class="float-end"><?= number_format($costSummary['cost_feed'], 2) ?> LKR</span></p>
-                    <p>Labor Cost: <span class="float-end"><?= number_format($costSummary['cost_labor'], 2) ?> LKR</span></p>
-                    <p>Medicine Cost: <span class="float-end"><?= number_format($costSummary['cost_medicine'], 2) ?> LKR</span></p>
-                    <p>Transport Cost: <span class="float-end"><?= number_format($costSummary['cost_transport'], 2) ?> LKR</span></p>
-                    <p>Electricity Cost: <span class="float-end"><?= number_format($costSummary['cost_electricity'], 2) ?> LKR</span></p>
-                    <hr>
-                    <h5 class="fw-bold">Total COGS 
-                        <span class="float-end"><?= number_format($costSummary['total_cost'], 2) ?> LKR</span>
-                    </h5>
-                </div>
-            </div>
-        </div>
-    </div>
+        <div class="statement-card mb-4">
+        <div class="card-header">Financial Summary (100 Weeks)</div>
+        <div class="card-body p-0">
+            <div class="statement-wrap">
+            <table class="statement-table">
 
-    <!-- Profit Section -->
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <div class="card shadow border-info">
-                <div class="card-header bg-info text-white fw-bold">Gross Profit</div>
-                <div class="card-body">
-                    <h4 class="fw-bold text-center"><?= number_format($grossProfit, 2) ?> LKR</h4>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card shadow border-primary">
-                <div class="card-header bg-primary text-white fw-bold">Gross Profit Margin</div>
-                <div class="card-body">
-                    <h4 class="fw-bold text-center"><?= number_format($profitMargin, 2) ?>%</h4>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+        <tbody>
 
-<!-- Cost per Egg -->
-<div class="row mt-4">
-  <div class="col-md-6">
-    <div class="card shadow border-dark">
-      <div class="card-header bg-dark text-white fw-bold">Cost per Egg (Laid)</div>
-      <div class="card-body">
-        <h4 class="fw-bold text-center">
-          <?= number_format($costPerEggLaid, 2) ?> LKR
-        </h4>
-        <p class="small text-muted text-center mb-0">
-          Formula: <em>Total Operational Cost ÷ Total Eggs Laid</em><br>
-          (<?= number_format($costSummary['total_cost'], 2) ?> LKR ÷ <?= number_format($eggsTotal) ?> eggs)
-        </p>
-      </div>
+          <!-- Revenue -->
+          <tr class="section-row"><td colspan="2">REVENUE</td></tr>
+          <tr>
+            <td>Egg Revenue</td>
+            <td class="amount"><?= number_format($totalEggRevenue, 2) ?> LKR</td>
+          </tr>
+          <tr>
+            <td>Cull Revenue</td>
+            <td class="amount"><?= number_format($totalCullRevenue, 2) ?> LKR</td>
+          </tr>
+          <tr class="total-row">
+            <td>Total Revenue</td>
+            <td class="amount"><?= number_format($totalRevenue, 2) ?> LKR</td>
+          </tr>
+        
+          <!-- Operational Costs -->
+          <tr class="section-row"><td colspan="2">Operational Costs</td></tr>
+          <tr>
+            <td>Feed</td>
+            <td class="amount"><?= number_format($costSummary['cost_feed'], 2) ?> LKR</td>
+          </tr>
+          <tr>
+            <td>Labor</td>
+            <td class="amount"><?= number_format($costSummary['cost_labor'], 2) ?> LKR</td>
+          </tr>
+          <tr>
+            <td>Medicine</td>
+            <td class="amount"><?= number_format($costSummary['cost_medicine'], 2) ?> LKR</td>
+          </tr>
+          <tr>
+            <td>Transport</td>
+            <td class="amount"><?= number_format($costSummary['cost_transport'], 2) ?> LKR</td>
+          </tr>
+          <tr>
+            <td>Electricity</td>
+            <td class="amount"><?= number_format($costSummary['cost_electricity'], 2) ?> LKR</td>
+          </tr>
+          <tr class="total-row">
+            <td>Total Operational Cost</td>
+            <td class="amount"><?= number_format($costSummary['total_cost'], 2) ?> LKR</td>
+          </tr>
+
+          <!-- Profitability -->
+          <tr class="section-row"><td colspan="2">PROFITABILITY</td></tr>
+          <tr>
+            <td>
+              Gross Profit 
+              <span class="metric-note">(Revenue − COGS)</span>
+            </td>
+            <td class="amount"><?= number_format($grossProfit, 2) ?> LKR</td>
+          </tr>
+          <tr>
+            <td>
+              Gross Profit Margin 
+              <span class="metric-note">((Profit ÷ Revenue) × 100)</span>
+            </td>
+            <td class="amount"><?= number_format($profitMargin, 2) ?>%</td>
+          </tr>
+
+          <!-- Unit Economics -->
+          <tr class="section-row"><td colspan="2">UNIT ECONOMICS</td></tr>
+          <tr>
+            <td>
+              Cost per Egg (Laid) 
+              <span class="metric-note">
+                (Total Cost ÷ Total Eggs Laid → <?= number_format($eggsTotal) ?> eggs)
+              </span>
+            </td>
+            <td class="amount"><?= number_format($costPerEggLaid, 2) ?> LKR</td>
+          </tr>
+          <tr>
+            <td>
+              Cost per Sellable Egg 
+              <span class="metric-note">
+                (Total Cost ÷ Sellable Eggs → <?= number_format($eggsSellable) ?> eggs)
+              </span>
+            </td>
+            <td class="amount"><?= number_format($costPerEggSellable, 2) ?> LKR</td>
+          </tr>
+          <!-- Disclaimer row -->
+          <tr>
+            <td colspan="2" class="disclaimer">
+              <em>
+                Note: Estimates are based on the best-case scenario of egg laying percentages.  
+                Maintenance, water, housing, and other utility costs are excluded from cost per egg calculations.
+              </em>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
     </div>
   </div>
-
-  <div class="col-md-6">
-    <div class="card shadow border-secondary">
-      <div class="card-header bg-secondary text-white fw-bold">Cost per Sellable Egg</div>
-      <div class="card-body">
-        <h4 class="fw-bold text-center">
-          <?= number_format($costPerEggSellable, 2) ?> LKR
-        </h4>
-        <p class="small text-muted text-center mb-0">
-          Formula: <em>Total Operational Cost ÷ Sellable Eggs</em><br>
-          (<?= number_format($costSummary['total_cost'], 2) ?> LKR ÷ <?= number_format($eggsSellable) ?> eggs)
-        </p>
-      </div>
-    </div>
-  </div>
 </div>
-
-
-
-
 
 
   <!-- Break-even Chart -->
@@ -283,12 +292,12 @@ $grandTotal       = $grand['total'];
                     borderColor: 'green',
                     fill: false
                 },
-                {
-                    label: 'Cumulative Revenue (Eggs + Cull)',
-                    data: <?= json_encode($chartData['cum_rev_with_cull']) ?>,
-                    borderColor: 'blue',
-                    fill: false
-                }
+                // {
+                //     label: 'Cumulative Revenue (Eggs + Cull)',
+                //     data: <?= json_encode($chartData['cum_rev_with_cull']) ?>,
+                //     borderColor: 'blue',
+                //     fill: false
+                // }
             ]
         },
         options: {

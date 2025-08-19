@@ -42,7 +42,7 @@ $fmt3 = fn($v) => number_format((float)($v ?? 0), 3);
       <div class="value"><?= number_format($summary['flock_size']) ?></div>
     </div>
 
-    <div class="kpi kpi--compact">
+    <div class="kpi green kpi--compact">
       <div class="label">Total Eggs (Laid) in 100 Weeks</div>
       <div class="value"><?= number_format($summary['total_eggs_laid']) ?></div>
     </div>
@@ -52,7 +52,7 @@ $fmt3 = fn($v) => number_format((float)($v ?? 0), 3);
       <div class="value"><?= number_format($summary['total_eggs_sellable']) ?></div>
     </div>
 
-    <div class="kpi kpi--compact">
+    <div class="kpi green kpi--compact">
       <div class="label">Egg Losses</div>
       <div class="value"><?= number_format($summary['total_egg_losses']) ?></div>
     </div>
@@ -68,7 +68,7 @@ $fmt3 = fn($v) => number_format((float)($v ?? 0), 3);
       <div class="value"><?= $fmt2($feedDocTotal) ?> LKR</div>
     </div> -->
 
-    <div class="kpi kpi--compact">
+    <div class="kpi green kpi--compact">
       <div class="label">Estimated Operational Cost</div>
       <div class="value"><?= $fmt2($grandTotal) ?> LKR</div>
     </div>
