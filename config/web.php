@@ -17,6 +17,7 @@ $config = [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'F5Hwgg7aMvpfJ_C-lFrGjc-9npRns3dG',
         ],
+        'formatter' => ['class' => \yii\i18n\Formatter::class, 'nullDisplay' => '-'],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
@@ -26,6 +27,7 @@ $config = [
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
+            
         ],
         'mailer' => [
             'class' => \yii\symfonymailer\Mailer::class,
@@ -61,6 +63,10 @@ $config = [
 
                 // Optional: short alias "ops/*" → OperationalCostController
                 'ops/<action:\w+>' => 'operational-cost/<action>',
+                'summary' => 'summary/index',
+                'summary/<id:\d+>' => 'summary/index',
+                'summary/<id:\d+>/excel' => 'summary/export-excel',
+                'summary/<id:\d+>/pdf'   => 'summary/export-pdf',
             ],
         ],
                 

@@ -39,7 +39,7 @@ $this->registerCsrfMetaTags();
         ['class' => 'nav-link ' . (Yii::$app->controller->id === 'revenue' ? 'active' : '')]
     ) ?>
     </li>
-    <li><?= Html::a('<i class="fas fa-list"></i> Summary', ['summary/index']) ?></li>
+    <li><?= Html::a('<i class="fas fa-list"></i> Weekly Summary', ['summary/index']) ?></li>
         </ul>
     </ul>
 </div>
