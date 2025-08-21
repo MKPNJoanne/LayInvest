@@ -7,13 +7,21 @@ use app\models\FeedConsumption;
 use app\models\ProductionData;
 use app\config\DashboardConfig;
 
+/**
+ * Dashboard data service.
+ * - Birds derived from Livability (%)
+ * - KPIs/series scaled by derived birds
+ * - FCR taken ONLY from core.feed_consumption.fcr (no computation)
+ */
 class DashboardService
 {
+    /** Clamp flock size to supported range. */
     private function clampFlockSize(int $size): int
     {
         return max(500, min(5000, $size));
     }
 
+    /** Single guide row for a week (feed table). */
     private function getGuideRow(int $week): ?array
     {
         return (new Query())
@@ -23,12 +31,15 @@ class DashboardService
             ->one();
     }
 
+    /** Convert fraction→% and clamp to [0..100]. */
     private function toPct(?float $v): ?float
     {
         if ($v === null) return null;
-        return ($v <= 1.0001) ? $v * 100.0 : $v;
+        $x = ($v <= 1.0001) ? $v * 100.0 : $v;
+        return max(0.0, min(100.0, $x));
     }
 
+    /** Livability (%) for a week, clamped. */
     private function getLivabilityPct(int $week): ?float
     {
         $row = (new Query())
@@ -37,40 +48,14 @@ class DashboardService
             ->select(['livability'])
             ->one();
 
-        return $this->toPct(isset($row['livability']) ? (float)$row['livability'] : null);
+        $val = isset($row['livability']) ? (float)$row['livability'] : null;
+        return $this->toPct($val);
     }
 
-    private function getWeeklyMortalityFromProductionPct(int $week): ?float
-    {
-        $row = (new Query())
-            ->from(ProductionData::tableName())
-            ->where(['week_no' => $week])
-            ->select([
-                'deaths'    => 'COALESCE(SUM(f_died_count),0)',
-                'avg_birds' => 'NULLIF(AVG(female_count),0)'
-            ])
-            ->one();
-
-        if (empty($row) || empty($row['avg_birds'])) return null;
-        return max(0.0, ((float)$row['deaths'] / (float)$row['avg_birds']) * 100.0);
-    }
-
-    private function getWeeklyMortalityPct(int $week): float
-    {
-        $Lpre = $this->getLivabilityPct($week - 1);
-        $Lw   = $this->getLivabilityPct($week);
-
-        if ($Lpre !== null && $Lw !== null) {
-            return round(max(0.0, $Lpre - $Lw), 3);
-        }
-
-        $prodPct = $this->getWeeklyMortalityFromProductionPct($week);
-        return $prodPct !== null ? round($prodPct, 3) : 0.0;
-    }
-
+    /** Rollup of production table for a week. */
     private function getProductionRollup(int $week): array
     {
-        $table = ProductionData::tableName();
+        $table  = ProductionData::tableName();
         $schema = Yii::$app->db->schema->getTableSchema($table, true);
 
         $select = [
@@ -91,9 +76,9 @@ class DashboardService
             ->one() ?? [];
     }
 
+    /** Scale eggs using birds derived for that week. */
     private function getEggsForWeek(int $weekNo, int $birdsForWeek): int
     {
-        // Scale eggs using actual birds for that week (derived), not initial flock
         $prod = (new Query())
             ->from(ProductionData::tableName())
             ->where(['week_no' => $weekNo])
@@ -109,39 +94,36 @@ class DashboardService
 
         if ($eggs > 0 && $birds > 0) {
             $perBirdPerDay = $eggs / $birds / $days;
-            return (int)round($perBirdPerDay * $birdsForWeek * 7.0);
+            return (int) round($perBirdPerDay * $birdsForWeek * 7.0);
         }
         return 0;
     }
 
-    /** ---------- NEW: Birds trajectory (derived from mortality) ---------- */
-
+    /** -------- Birds trajectory derived from Livability (%) -------- */
     private function getBirdsTrajectory(int $initialFlock, int $toWeek = 100): array
     {
         $initialFlock = $this->clampFlockSize($initialFlock);
-        $toWeek = max(1, min(100, $toWeek));
+        $toWeek       = max(1, min(100, $toWeek));
 
         $birds = [];
-        $prev  = (float)$initialFlock;
-
         for ($w = 1; $w <= $toWeek; $w++) {
-            $mortPct = $this->getWeeklyMortalityPct($w);
-            $deaths  = (int)round($prev * ($mortPct / 100.0));
-            $now     = max(0.0, $prev - $deaths);
-            $birds[$w] = (int)round($now);
-            $prev = $now;
+            $Lw    = $this->getLivabilityPct($w);       // 0..100 or null
+            $ratio = ($Lw !== null) ? ($Lw / 100.0) : 1.0;
+            $birds[$w] = (int) round($initialFlock * $ratio);
         }
-        return $birds; // 1..$toWeek
+        return $birds; // keys 1..$toWeek
     }
 
     private function getBirdsAtWeek(int $initialFlock, int $week): int
     {
+        $initialFlock = $this->clampFlockSize($initialFlock);
         $week  = max(1, min(100, $week));
-        $trail = $this->getBirdsTrajectory($initialFlock, $week);
-        return $trail[$week] ?? $initialFlock;
+        $Lw    = $this->getLivabilityPct($week);
+        $ratio = ($Lw !== null) ? ($Lw / 100.0) : 1.0;
+        return (int) round($initialFlock * $ratio);
     }
 
-    /** PUBLIC: Estimate broken eggs (now scaled by derived birds) */
+    /** Estimate broken eggs using derived birds + production ratios. */
     public function estimateBrokenEggs(int $weekNo, int $initialFlock): array
     {
         $birdsForWeek = $this->getBirdsAtWeek($initialFlock, $weekNo);
@@ -164,7 +146,7 @@ class DashboardService
 
         if ($broken > 0 && $birds > 0) {
             $perBirdPerDay = $broken / $birds / $days;
-            $scaledBroken  = (int)round($perBirdPerDay * $birdsForWeek * 7.0);
+            $scaledBroken  = (int) round($perBirdPerDay * $birdsForWeek * 7.0);
         } else {
             $row = (new Query())
                 ->from(ProductionData::tableName())
@@ -174,12 +156,11 @@ class DashboardService
                 ])
                 ->one();
 
-            $totalBroken = (float)$row['totalBroken'];
-            $totalEggs   = (float)$row['totalEggs'];
-
+            $totalBroken  = (float)$row['totalBroken'];
+            $totalEggs    = (float)$row['totalEggs'];
             $brokenRate   = $totalEggs > 0 ? ($totalBroken / $totalEggs) : 0.01;
             $scaledEggsWk = $this->getEggsForWeek($weekNo, $birdsForWeek);
-            $scaledBroken = (int)round($brokenRate * $scaledEggsWk);
+            $scaledBroken = (int) round($brokenRate * $scaledEggsWk);
         }
 
         $scaledEggs = $this->getEggsForWeek($weekNo, $birdsForWeek);
@@ -191,14 +172,7 @@ class DashboardService
         ];
     }
 
-    private function resolveEggWeightG(array $prod, int $week): float
-    {
-        if (!empty($prod['avg_egg_weight'])) {
-            return (float)$prod['avg_egg_weight'];
-        }
-        return 60.0;
-    }
-
+    /** Feed g/bird/day from guide row (with min/max sanity). */
     private function resolveFeedGPerBirdDay(?array $guide, int $week): ?float
     {
         if (!empty($guide['feed_g'])) {
@@ -216,13 +190,21 @@ class DashboardService
         return $fallback ? (float)$fallback : null;
     }
 
-    private function computeFcrEggMass(float $feedGPerBirdDay, float $layPct, float $eggWeightG): ?float
+    /** FCR from core.feed_consumption (no computation). */
+    private function getFcrForWeek(int $week): ?float
     {
-        if ($layPct <= 0.0 || $eggWeightG <= 0.0 || $feedGPerBirdDay <= 0.0) return null;
-        return $feedGPerBirdDay / (($layPct / 100.0) * $eggWeightG);
+        $row = (new Query())
+            ->from(FeedConsumption::tableName())
+            ->where(['week_no' => $week])
+            ->select(['fcr'])
+            ->one();
+
+        if (!$row) return null;
+        $v = (float)$row['fcr'];
+        return $v > 0 ? round($v, 2) : null;
     }
 
-    /** ---------- KPI uses derived birds for the selected week ---------- */
+    /** KPI block (uses livability-derived birds; FCR from DB). */
     public function getKpiData(int $initialFlock, int $week): array
     {
         $initialFlock = $this->clampFlockSize($initialFlock);
@@ -238,12 +220,9 @@ class DashboardService
 
         $feedG = $this->resolveFeedGPerBirdDay($guide, $week);
 
-        // Derived birds for this week + previous week (for deaths calc)
+        // Livability and birds for this week
+        $livabilityPct = $this->getLivabilityPct($week) ?? 100.0;
         $birdsThisWeek = $this->getBirdsAtWeek($initialFlock, $week);
-        $birdsPrevWeek = ($week > 1) ? $this->getBirdsAtWeek($initialFlock, $week - 1) : $initialFlock;
-
-        $mortPctWeek = $this->getWeeklyMortalityPct($week);
-        $deathsWeek  = (int) round($birdsPrevWeek * ($mortPctWeek / 100.0));
 
         // Eggs scaled by derived birds for this week
         $eggsScaled = 0;
@@ -255,37 +234,30 @@ class DashboardService
             $eggsScaled = (int) round(($layPct / 100.0) * $birdsThisWeek * 7.0);
         }
 
-        $eggWeightG = $this->resolveEggWeightG($prod, $week);
-        $fcr = null;
-        if ($week >= DashboardConfig::LAY_START_WEEK && $feedG !== null && $layPct > 0) {
-            $fcr = $this->computeFcrEggMass($feedG, $layPct, $eggWeightG);
-        }
+        // FCR: strict DB value
+        $fcr = $this->getFcrForWeek($week);
 
         return [
             'metrics' => [
-                'initial_flock' => $initialFlock,
+                'initial_flock'   => $initialFlock,
                 'birds_this_week' => $birdsThisWeek,
-                'feed_per_bird' => $feedG !== null ? round($feedG, 1) : null,
-                'mortality'     => [
-                    'percent' => round($mortPctWeek, 2),
-                    'deaths'  => $deathsWeek
-                ],
-                'laying_rate'   => round($layPct, 1),
-                'fcr'           => $fcr !== null ? round($fcr, 2) : null,
-                'eggs_total'    => $eggsScaled,
-                'broken_eggs'   => $this->estimateBrokenEggs($week, $initialFlock),
+                'feed_per_bird'   => $feedG !== null ? round($feedG, 1) : null,
+                'livability'      => round($livabilityPct, 2),
+                'laying_rate'     => round($layPct, 1),
+                'fcr'             => $fcr, // may be null if 0/empty in DB
+                'eggs_total'      => $eggsScaled,
+                'broken_eggs'     => $this->estimateBrokenEggs($week, $initialFlock),
             ]
         ];
     }
 
-    /** ---------- Series now scaled by derived birds per week ---------- */
+    /** Eggs series scaled by derived birds. */
     public function getEggSeries(int $initialFlock, int $startWeek, int $endWeek): array
     {
         $initialFlock = $this->clampFlockSize($initialFlock);
         $startWeek = max(1, $startWeek);
         $endWeek   = min(100, $endWeek);
 
-        // Precompute birds trajectory up to endWeek once
         $birdsTrail = $this->getBirdsTrajectory($initialFlock, $endWeek);
 
         $out = [];
@@ -308,25 +280,38 @@ class DashboardService
         return $out;
     }
 
-    public function getMortalitySeries(int $initialFlock, int $startWeek, int $endWeek): array
+    /** Livability line series (1..100). */
+    public function getLivabilitySeries(int $startWeek, int $endWeek): array
     {
+        $startWeek = max(1, $startWeek);
+        $endWeek   = min(100, $endWeek);
+
+        $rows = (new Query())
+            ->from(FeedConsumption::tableName())
+            ->where(['between', 'week_no', $startWeek, $endWeek])
+            ->select(['week_no','livability'])
+            ->orderBy('week_no')
+            ->indexBy('week_no')
+            ->all();
+
         $out = [];
         for ($w = $startWeek; $w <= $endWeek; $w++) {
-            $out[] = [
-                'week_no'   => $w,
-                'mortality' => $this->getWeeklyMortalityPct($w)
-            ];
+            $val = null;
+            if (isset($rows[$w])) {
+                $val = $this->toPct((float)$rows[$w]['livability']);
+            }
+            $out[] = ['week_no' => $w, 'livability' => $val !== null ? round($val, 2) : null];
         }
         return $out;
     }
 
+    /** Feed kg/week and g/bird/day series. */
     public function getFeedSeries(int $initialFlock, int $startWeek, int $endWeek): array
     {
         $initialFlock = $this->clampFlockSize($initialFlock);
         $startWeek = max(1, $startWeek);
         $endWeek   = min(100, $endWeek);
 
-        // Birds per week for scaling kg
         $birdsTrail = $this->getBirdsTrajectory($initialFlock, $endWeek);
 
         $rows = (new Query())

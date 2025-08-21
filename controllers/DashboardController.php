@@ -3,50 +3,117 @@ namespace app\controllers;
 
 use Yii;
 use yii\web\Controller;
+use yii\db\Query;
 use app\services\DashboardService;
-use app\config\DashboardConfig;
+use app\models\Summary;
 
 class DashboardController extends Controller
 {
-    private $dashboardService;
-
-    public function __construct($id, $module, $config = [])
+    public function actionIndex(?int $week = null)
     {
-        $this->dashboardService = new DashboardService();
-        parent::__construct($id, $module, $config);
-    }
+        // Latest scenario
+        $scenario = (new Query())
+            ->from('oc.operational_cost_inputs')
+            ->orderBy(['id' => SORT_DESC])
+            ->one();
 
-    public function actionIndex()
-    {
-        $week = (int) Yii::$app->request->get('week', 20);
-        $flockSize = (int) Yii::$app->request->get('flock_size', 2000);
+        if (!$scenario) {
+            return $this->render('index_empty');
+        }
 
-        $windowStart = max($week - (DashboardConfig::CHART_WINDOW_WEEKS - 1), 1);
+        $scenarioId   = (int)$scenario['id'];
+        $initialFlock = (int)($scenario['flock_size'] ?? $scenario['birds'] ?? 0);
 
-        // Core KPI data
-        $kpiData = $this->dashboardService->getKpiData($flockSize, $week);
+        // Clamp week
+        $week = $week ?? 20;
+        $week = max(1, min(100, (int)$week));
 
-        // Broken egg data (only call once from service)
-        $brokenData = $kpiData['metrics']['broken_eggs'];
+        // ===== Service-derived metrics & series =====
+        $svc        = new DashboardService();
+        $kpi        = $svc->getKpiData($initialFlock, $week);
+        $eggsRows   = $svc->getEggSeries($initialFlock, 1, 100);
+        $livRows    = $svc->getLivabilitySeries(1, 100);
+        $feedRows   = $svc->getFeedSeries($initialFlock, 1, 100);
 
-        // Chart series
-        $eggSeries = $this->dashboardService->getEggSeries($flockSize, $windowStart, $week);
-        $mortalitySeries = $this->dashboardService->getMortalitySeries($flockSize, $windowStart, $week);
-        $feedSeries = $this->dashboardService->getFeedSeries($flockSize, $windowStart, $week);
+        // ===== Existing Summary helpers =====
+        $costRows   = Summary::opsWeeklyCosts($scenarioId);
+        $priceRows  = Summary::forecastPrices($scenarioId);
+
+        // --- NEW: revenue rows from the same aggregation used on the Revenue page
+        // Must return: week_no, revenue_small, revenue_white, total_weekly_revenue
+        $revRows    = Summary::eggRevenue($scenarioId);
+
+        $indexByWeek = function(array $rows) {
+            $out=[]; foreach ($rows as $r) { $out[(int)$r['week_no']] = $r; } return $out;
+        };
+        $costW  = $indexByWeek($costRows);
+        $priceW = $indexByWeek($priceRows);
+        $revW   = $indexByWeek($revRows);
+
+        // Fixed-cost pie (selected week)
+        $c = $costW[$week] ?? [];
+        $opsFixed = [
+            'Labor'       => (float)($c['labor_cost_lkr']       ?? 0),
+            'Medicine'    => (float)($c['medicine_cost_lkr']    ?? 0),
+            'Electricity' => (float)($c['electricity_cost_lkr'] ?? 0),
+            'Transport'   => (float)($c['transport_cost_lkr']   ?? 0),
+        ];
+
+        // Forecasted prices bars (selected week)
+        $p = $priceW[$week] ?? [];
+        $forecastBars = [
+            'Feed Starter' => (float)($p['feed_starter'] ?? 0),
+            'Feed Grower'  => (float)($p['feed_grower']  ?? 0),
+            'Feed Layer'   => (float)($p['feed_layer']   ?? 0),
+            'DOC'          => (float)($p['doc_price']    ?? 0),
+            'Egg Small'    => (float)($p['egg_small']    ?? 0),
+            'Egg White'    => (float)($p['egg_white']    ?? 0),
+            'Cull'         => (float)($p['cull_price']   ?? 0),
+        ];
+
+        // ===== Revenue (trend + breakdown for selected week) =====
+        $labels = range(1, 100);
+
+        $revSmallSeries = [];
+        $revWhiteSeries = [];
+        $revTotalSeries = [];
+        foreach ($labels as $w) {
+            $row = $revW[$w] ?? null;
+            $revSmallSeries[] = $row ? (float)$row['revenue_small']        : 0.0;
+            $revWhiteSeries[] = $row ? (float)$row['revenue_white']        : 0.0;
+            $revTotalSeries[] = $row ? (float)$row['total_weekly_revenue'] : 0.0;
+        }
+
+        $rw = $revW[$week] ?? [];
+        $weekRevBreakdown = [
+            'Small Eggs' => (float)($rw['revenue_small'] ?? 0),
+            'White Eggs' => (float)($rw['revenue_white'] ?? 0),
+        ];
+
+        // Unpack other series for charts
+        $eggsSeries     = array_column($eggsRows,  'total');
+        $livSeries      = array_map(fn($r) => $r['livability'], $livRows);
+        $feedKgSeries   = array_column($feedRows, 'feed_kg');
+        $gPerBirdSeries = array_column($feedRows, 'g_per_bird_day');
 
         return $this->render('index', [
-            'week'               => $week,
-            'weeksList'          => range(1, 100),
-            'flockSize'          => $flockSize,
-            'data'               => $kpiData,
-            'eggSeries'          => $eggSeries,
-            'mortalitySeries'    => $mortalitySeries,
-            'feedSeries'         => $feedSeries,
-            'windowStart'        => $windowStart,
-            'broken_eggs_amount' => $brokenData['broken_amount'],
-            'broken_eggs_pct'    => $brokenData['broken_percentage'],
+            'scenarioId'       => $scenarioId,
+            'week'             => $week,
+            'initialFlock'     => $initialFlock,
+            'kpis'             => $kpi['metrics'],
+            'labels'           => $labels,
+            'eggsSeries'       => $eggsSeries,
+            'livSeries'        => $livSeries,
+            'feedKgSeries'     => $feedKgSeries,
+            'gPerBirdSeries'   => $gPerBirdSeries,
+            'opsFixed'         => $opsFixed,
+            'forecastBars'     => $forecastBars,
+
+            // NEW for revenue charts
+            'revSmallSeries'   => $revSmallSeries,
+            'revWhiteSeries'   => $revWhiteSeries,
+            'revTotalSeries'   => $revTotalSeries,
+            'weekRevBreakdown' => $weekRevBreakdown,
         ]);
     }
-
-    
 }
