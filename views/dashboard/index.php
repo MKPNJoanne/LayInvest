@@ -33,7 +33,7 @@ $this->registerCssFile('@web/css/revenue.css');
           <input type="number" name="week" value="<?= (int)$week ?>" min="1" max="100" class="form-control" style="width:80px;">
           <button class="btn btn-success">Go</button>
         </form>
-        <span class="ms-3">Scenario #<?= Html::encode($scenarioId) ?></span>
+        <!-- <span class="ms-3">Scenario #<?= Html::encode($scenarioId) ?></span> -->
       </div>
     </div>
 

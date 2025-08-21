@@ -26,21 +26,35 @@ $this->registerCsrfMetaTags();
 <div class="sidebar" id="sidebar">
     <div class="brand">
         <i class="fas fa-egg"></i>
-        <span class="brand-text">LayInvest</span>
+        <a href="<?= \yii\helpers\Url::to(['dashboard/index']) ?>" class="brand-link">
+            <span class="brand-text">LayInvest</span>
+        </a>
     </div>
-    <ul>
-        <ul>
-    <li><?= Html::a('<i class="fas fa-chart-pie"></i> Overview', ['dashboard/index']) ?></li>
-    <li><?= Html::a('<i class="fas fa-chart-line"></i> Operational Cost Analysis', ['operational-cost/create']) ?></li>
-    <li>
-    <?= Html::a(
-        '<i class="fas fa-dollar-sign"></i> Revenue & Break-even Analysis',
-        ['revenue/view'],
-        ['class' => 'nav-link ' . (Yii::$app->controller->id === 'revenue' ? 'active' : '')]
-    ) ?>
-    </li>
-    <li><?= Html::a('<i class="fas fa-list"></i> Weekly Summary', ['summary/index']) ?></li>
-        </ul>
+
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <?= Html::a('<i class="fas fa-chart-pie"></i> Overview', ['dashboard/index'], [
+                'class' => 'nav-link ' . (Yii::$app->controller->id === 'dashboard' ? 'active' : '')
+            ]) ?>
+        </li>
+
+        <li class="nav-item">
+            <?= Html::a('<i class="fas fa-chart-line"></i> Operational Cost Analysis', ['operational-cost/create'], [
+                'class' => 'nav-link ' . (Yii::$app->controller->id === 'operational-cost' ? 'active' : '')
+            ]) ?>
+        </li>
+
+        <li class="nav-item">
+            <?= Html::a('<i class="fas fa-dollar-sign"></i> Revenue & Break-even Analysis', ['revenue/view'], [
+                'class' => 'nav-link ' . (Yii::$app->controller->id === 'revenue' ? 'active' : '')
+            ]) ?>
+        </li>
+
+        <li class="nav-item">
+            <?= Html::a('<i class="fas fa-list"></i> Weekly Summary', ['summary/index'], [
+                'class' => 'nav-link ' . (Yii::$app->controller->id === 'summary' ? 'active' : '')
+            ]) ?>
+        </li>
     </ul>
 </div>
 
