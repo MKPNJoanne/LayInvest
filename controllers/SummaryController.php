@@ -34,7 +34,7 @@ class SummaryController extends Controller
 
         $prices     = Summary::forecastPrices($id);
         $cull       = Summary::cullRevenue($id);
-        $dist       = Summary::costDistribution($id);
+        // $dist       = Summary::costDistribution($id);
 
         $providers = [
             'production' => new ArrayDataProvider(['allModels'=>$production,'pagination'=>['pageSize'=>20]]),
@@ -45,7 +45,7 @@ class SummaryController extends Controller
             'cull'       => new ArrayDataProvider(['allModels'=>$cull,      'pagination'=>false]),
         ];
 
-        return $this->render('index', compact('id','providers','dist'));
+        return $this->render('index', compact('id','providers'));
     }
 
 public function actionExportExcel($id = null)

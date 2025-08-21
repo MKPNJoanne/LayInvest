@@ -6,18 +6,18 @@ use yii\grid\GridView;
 /** @var array $providers */
 /** @var array $dist */
 
-$this->title = $id ? "Summary (Scenario #{$id})" : "Summary";
+$this->title = $id ? "Weekly Summary (Scenario #{$id})" : "Summary";
 ?>
 
 <div class="container mt-3">
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h3 class="mb-0"><?= Html::encode($this->title) ?></h3>
+    <!-- <h3 class="mb-0"><?= Html::encode($this->title) ?></h3> -->
     <?php if ($id): ?>
       <div>
         <?= Html::a(
             'Download Excel',
             ['summary/export-excel','id'=>$id],
-            ['class'=>'btn btn-success me-2', 'data-pjax' => 0]   // <—
+            ['class'=>'btn btn-success me-2', 'data-pjax' => 0]   
         ) ?>
 
       </div>
@@ -28,26 +28,7 @@ $this->title = $id ? "Summary (Scenario #{$id})" : "Summary";
     <div class="alert alert-info">No summary available yet. Add operational inputs to create a scenario.</div>
     <?php return; ?>
   <?php endif; ?>
-
-  <!-- Cost distribution (bar) -->
-  <div class="card p-3 mb-4">
-    <h5 class="mb-2">Cost Distribution (Totals over 100 weeks)</h5>
-    <div style="max-width:760px">
-      <canvas id="costBar" height="120"></canvas>
-    </div>
-    <div class="mt-2 small text-muted">
-      <?php
-        $labels = ['feed','doc','labor','medicine','electricity','transport'];
-        $parts = [];
-        foreach ($labels as $k) {
-          $pct = isset($dist[$k]['pct']) ? $dist[$k]['pct'] : 0;
-          $amt = isset($dist[$k]['amount']) ? number_format($dist[$k]['amount'],2) : '0.00';
-          $parts[] = ucfirst($k)." LKR {$amt} ({$pct}%)";
-        }
-        echo implode(' · ', $parts);
-      ?>
-    </div>
-  </div>
+  
 
   <div class="card p-3 mb-4">
     <h5>Egg Production (Weeks 1–100)</h5>
@@ -131,27 +112,3 @@ $this->title = $id ? "Summary (Scenario #{$id})" : "Summary";
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<script>
-(function(){
-  const el = document.getElementById('costBar');
-  const labels = ['Feed','Doc','Labor','Medicine','Electricity','Transport'];
-  const data   = [
-    <?= (float)($dist['feed']['amount'] ?? 0) ?>,
-    <?= (float)($dist['doc']['amount'] ?? 0) ?>,
-    <?= (float)($dist['labor']['amount'] ?? 0) ?>,
-    <?= (float)($dist['medicine']['amount'] ?? 0) ?>,
-    <?= (float)($dist['electricity']['amount'] ?? 0) ?>,
-    <?= (float)($dist['transport']['amount'] ?? 0) ?>
-  ];
-  new Chart(el, {
-    type: 'bar',
-    data: { labels, datasets: [{ data }] },
-    options: {
-      responsive: true,
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true, ticks: { callback: (v)=>v } } }
-    }
-  });
-})();
-</script>

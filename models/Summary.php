@@ -112,7 +112,7 @@ class Summary
     /* ---------- 4) Operational Costs (prefer DB table; fallback to forecast aggregation) ---------- */
     public static function opsWeeklyCosts(int $scenarioId): array
     {
-        // Try the canonical table first
+      
         $rows = Yii::$app->db->createCommand("
           SELECT
             ROW_NUMBER() OVER (ORDER BY ds)::int AS week_no,
@@ -174,51 +174,51 @@ class Summary
     }
 
     /* ---------- Cost distribution ---------- */
-    public static function costDistribution(int $scenarioId): array
-    {
-        try {
-            $view = Yii::$app->db->createCommand("
-              SELECT
-                COALESCE(cost_feed_lkr,0)        AS feed,
-                COALESCE(cost_doc_lkr,0)         AS doc,
-                COALESCE(cost_labor_lkr,0)       AS labor,
-                COALESCE(cost_medicine_lkr,0)    AS medicine,
-                COALESCE(cost_electricity_lkr,0) AS electricity,
-                COALESCE(cost_transport_lkr,0)   AS transport
-              FROM oc.vw_scenario_cost_summary
-              WHERE scenario_id = :id
-              LIMIT 1
-            ")->bindValue(':id',$scenarioId)->queryOne();
+    // public static function costDistribution(int $scenarioId): array
+    // {
+    //     try {
+    //         $view = Yii::$app->db->createCommand("
+    //           SELECT
+    //             COALESCE(cost_feed_lkr,0)        AS feed,
+    //             COALESCE(cost_doc_lkr,0)         AS doc,
+    //             COALESCE(cost_labor_lkr,0)       AS labor,
+    //             COALESCE(cost_medicine_lkr,0)    AS medicine,
+    //             COALESCE(cost_electricity_lkr,0) AS electricity,
+    //             COALESCE(cost_transport_lkr,0)   AS transport
+    //           FROM oc.vw_scenario_cost_summary
+    //           WHERE scenario_id = :id
+    //           LIMIT 1
+    //         ")->bindValue(':id',$scenarioId)->queryOne();
 
-            if ($view) {
-                $sum = array_sum(array_map('floatval',$view)) ?: 1;
-                foreach ($view as $k=>$v) {
-                    $view[$k] = ['amount'=>(float)$v,'pct'=>round(((float)$v*100)/$sum,2)];
-                }
-                return $view;
-            }
-        } catch (\Throwable $e) { /* fallback below */ }
+    //         if ($view) {
+    //             $sum = array_sum(array_map('floatval',$view)) ?: 1;
+    //             foreach ($view as $k=>$v) {
+    //                 $view[$k] = ['amount'=>(float)$v,'pct'=>round(((float)$v*100)/$sum,2)];
+    //             }
+    //             return $view;
+    //         }
+    //     } catch (\Throwable $e) { /* fallback below */ }
 
-        $meta = self::getStartDateAndFlock($scenarioId);
-        $tot = Yii::$app->db->createCommand("
-          SELECT
-            SUM(cost_feed)        AS feed,
-            SUM(cost_doc)         AS doc,
-            SUM(cost_labor)       AS labor,
-            SUM(cost_medicine)    AS medicine,
-            SUM(cost_electricity) AS electricity,
-            SUM(cost_transport)   AS transport
-          FROM oc.calc_operational_weekly_forecast(CAST(:start_date AS date), :flock, :sid, 'full_cycle')
-        ")->bindValues([
-            ':start_date'=>$meta['start_date'],
-            ':flock'=>$meta['flock_size'],
-            ':sid'=>$scenarioId
-        ])->queryOne();
+    //     $meta = self::getStartDateAndFlock($scenarioId);
+    //     $tot = Yii::$app->db->createCommand("
+    //       SELECT
+    //         SUM(cost_feed)        AS feed,
+    //         SUM(cost_doc)         AS doc,
+    //         SUM(cost_labor)       AS labor,
+    //         SUM(cost_medicine)    AS medicine,
+    //         SUM(cost_electricity) AS electricity,
+    //         SUM(cost_transport)   AS transport
+    //       FROM oc.calc_operational_weekly_forecast(CAST(:start_date AS date), :flock, :sid, 'full_cycle')
+    //     ")->bindValues([
+    //         ':start_date'=>$meta['start_date'],
+    //         ':flock'=>$meta['flock_size'],
+    //         ':sid'=>$scenarioId
+    //     ])->queryOne();
 
-        $sum = array_sum(array_map('floatval',$tot ?: [])) ?: 1;
-        foreach ($tot as $k=>$v) {
-            $tot[$k] = ['amount'=>(float)$v,'pct'=>round(((float)$v*100)/$sum,2)];
-        }
-        return $tot;
-    }
+    //     $sum = array_sum(array_map('floatval',$tot ?: [])) ?: 1;
+    //     foreach ($tot as $k=>$v) {
+    //         $tot[$k] = ['amount'=>(float)$v,'pct'=>round(((float)$v*100)/$sum,2)];
+    //     }
+    //     return $tot;
+    // }
 }
