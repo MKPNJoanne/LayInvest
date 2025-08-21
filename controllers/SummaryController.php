@@ -38,7 +38,7 @@ class SummaryController extends Controller
 
         $providers = [
             'production' => new ArrayDataProvider(['allModels'=>$production,'pagination'=>['pageSize'=>20]]),
-            'revenue'    => new ArrayDataProvider(['allModels'=>$revenue,   'pagination'=>['pageSize'=>15]]),
+            'revenue'    => new ArrayDataProvider(['allModels'=>$revenue,   'pagination'=>['pageSize'=>20]]),
             'feed'       => new ArrayDataProvider(['allModels'=>$feedWeekly,'pagination'=>['pageSize'=>15]]),
             'costs'      => new ArrayDataProvider(['allModels'=>$costsAgg,  'pagination'=>['pageSize'=>15]]),
             'prices'     => new ArrayDataProvider(['allModels'=>$prices,    'pagination'=>['pageSize'=>15]]),
