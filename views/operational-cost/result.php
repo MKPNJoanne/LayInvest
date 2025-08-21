@@ -30,10 +30,14 @@ $fmt3 = fn($v) => number_format((float)($v ?? 0), 3);
 
 <div class="page-section">
 
-  <!-- Back Button -->
-  <div class="mb-3">
-    <?= Html::a('← Back', ['operational-cost/view', 'id' => $summary['scenario_id']], ['class' => 'btn btn-outline-secondary']) ?>
-  </div>
+<!-- Back Button -->
+
+<div class="d-flex justify-content-end mb-3">
+    <?= Html::a('← Back', ['operational-cost/index'], ['class' => 'btn btn-success me-2']) ?>
+    <?= Html::a('+ Start New Flock', ['operational-cost/create'], ['class' => 'btn btn-success']) ?>
+</div>
+
+
 
   <!-- KPI Row -->
   <div class="kpis">

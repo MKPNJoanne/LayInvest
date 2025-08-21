@@ -32,7 +32,7 @@ $gridCommon = [
 ?>
 
 <div class="page-section">
-  <div class="d-flex justify-content-between align-items-center mb-3">
+  <div class="d-flex justify-content-end mb-3">
     <?php if ($id): ?>
       <div>
         <?= Html::a(

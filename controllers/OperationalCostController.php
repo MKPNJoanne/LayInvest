@@ -13,6 +13,22 @@ class OperationalCostController extends Controller
      * Create form: saves an input row into oc.operational_cost_inputs
      * and immediately calculates & shows the result.
      */
+
+    public function actionIndex()
+    {
+        $latestId = (new \yii\db\Query())
+            ->from('oc.operational_cost_inputs')
+            ->select('id')
+            ->orderBy(['id' => SORT_DESC])
+            ->scalar();
+
+        if ($latestId) {
+            // send to result page (which redirects to calculate)
+            return $this->redirect(['result', 'scenario_id' => (int)$latestId]);
+        }
+        // no scenarios yet -> start by creating one
+        return $this->redirect(['create']);
+    }
     public function actionCreate()
 {
     $model = new OperationalCostInput();
@@ -426,6 +442,8 @@ class OperationalCostController extends Controller
         throw $e;
     }
 }
+
+
 
 
 }

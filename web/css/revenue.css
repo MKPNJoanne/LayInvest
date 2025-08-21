@@ -317,7 +317,7 @@ html, body{
 /* Active page */
 .pagination li.active a,
 .pagination li.active span {
-  background: #04390d;       /* dark green */
+  background: #04390d;       
   color: #fff !important;
   border-color: #0f231c;
 }

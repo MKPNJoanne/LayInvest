@@ -39,7 +39,7 @@ $this->registerCsrfMetaTags();
         </li>
 
         <li class="nav-item">
-            <?= Html::a('<i class="fas fa-chart-line"></i> Operational Cost Analysis', ['operational-cost/create'], [
+            <?= Html::a('<i class="fas fa-chart-line"></i> Operational Cost Analysis', ['operational-cost/index'], [
                 'class' => 'nav-link ' . (Yii::$app->controller->id === 'operational-cost' ? 'active' : '')
             ]) ?>
         </li>
