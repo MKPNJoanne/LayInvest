@@ -92,7 +92,7 @@ def fit_and_forecast(df, start_date, weeks, series_name):
     )
     model.fit(df)
 
-    # Build future horizon: Prophet includes history rows; we’ll filter by start_date after
+    # Build future horizon: Prophet includes history row
     future = model.make_future_dataframe(periods=weeks, freq="W")
     future["floor"] = min_cap
     future["cap"]   = max_cap

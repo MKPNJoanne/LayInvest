@@ -30,83 +30,83 @@ class OperationalCostController extends Controller
         return $this->redirect(['create']);
     }
     public function actionCreate()
-{
-    $model = new OperationalCostInput();
+    {
+        $model = new OperationalCostInput();
 
-    // Defaults from baselines
-    $defaults = (new \yii\db\Query())
-        ->select(['cost_type', 'base_value', 'monthly_increment_pct'])
-        ->from('oc.oc_baselines')
-        ->indexBy('cost_type')
-        ->all();
+        // Defaults from baselines
+        $defaults = (new \yii\db\Query())
+            ->select(['cost_type', 'base_value', 'monthly_increment_pct'])
+            ->from('oc.oc_baselines')
+            ->indexBy('cost_type')
+            ->all();
 
-    if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-        if ($model->flock_size < 500 || $model->flock_size > 5000) {
-            $model->addError('flock_size', 'Flock size must be between 500 and 5000.');
-        } else {
-            // Fill blank overrides with defaults
-            $model->cost_labor_override       = $this->useDefaultIfEmpty($model->cost_labor_override,       $defaults, 'labor');
-            $model->cost_electricity_override = $this->useDefaultIfEmpty($model->cost_electricity_override, $defaults, 'electricity');
-            $model->cost_medicine_override    = $this->useDefaultIfEmpty($model->cost_medicine_override,    $defaults, 'medicine');
-            $model->cost_transport_override   = $this->useDefaultIfEmpty($model->cost_transport_override,   $defaults, 'transport');
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            if ($model->flock_size < 500 || $model->flock_size > 5000) {
+                $model->addError('flock_size', 'Flock size must be between 500 and 5000.');
+            } else {
+                // Fill blank overrides with defaults
+                $model->cost_labor_override       = $this->useDefaultIfEmpty($model->cost_labor_override,       $defaults, 'labor');
+                $model->cost_electricity_override = $this->useDefaultIfEmpty($model->cost_electricity_override, $defaults, 'electricity');
+                $model->cost_medicine_override    = $this->useDefaultIfEmpty($model->cost_medicine_override,    $defaults, 'medicine');
+                $model->cost_transport_override   = $this->useDefaultIfEmpty($model->cost_transport_override,   $defaults, 'transport');
 
-            // Insert (let Postgres auto-generate id)
-            Yii::$app->db->createCommand()->insert('oc.operational_cost_inputs', [
-                'start_date'                => $model->start_date,
-                'flock_size'                => $model->flock_size,
-                'cost_labor_override'       => $model->cost_labor_override,
-                'cost_electricity_override' => $model->cost_electricity_override,
-                'cost_medicine_override'    => $model->cost_medicine_override,
-                'cost_transport_override'   => $model->cost_transport_override,
-                'created_at'                => date('Y-m-d H:i:s'),
-            ])->execute();
+                // Insert (let Postgres auto-generate id)
+                Yii::$app->db->createCommand()->insert('oc.operational_cost_inputs', [
+                    'start_date'                => $model->start_date,
+                    'flock_size'                => $model->flock_size,
+                    'cost_labor_override'       => $model->cost_labor_override,
+                    'cost_electricity_override' => $model->cost_electricity_override,
+                    'cost_medicine_override'    => $model->cost_medicine_override,
+                    'cost_transport_override'   => $model->cost_transport_override,
+                    'created_at'                => date('Y-m-d H:i:s'),
+                ])->execute();
 
-            $id = (int)Yii::$app->db->getLastInsertID();
+                $id = (int)Yii::$app->db->getLastInsertID();
 
-            // Call population functions so feed + DOC costs are stored
-            Yii::$app->db->createCommand("
-                SELECT oc.populate_scenario_feed_costs(:sid, :start_date, :flock);
-            ")->bindValues([
-                ':sid'        => $id,
-                ':start_date' => $model->start_date,
-                ':flock'      => (int)$model->flock_size,
-            ])->execute();
+                // Call population functions so feed + DOC costs are stored
+                Yii::$app->db->createCommand("
+                    SELECT oc.populate_scenario_feed_costs(:sid, :start_date, :flock);
+                ")->bindValues([
+                    ':sid'        => $id,
+                    ':start_date' => $model->start_date,
+                    ':flock'      => (int)$model->flock_size,
+                ])->execute();
 
-            Yii::$app->db->createCommand("
-                SELECT oc.populate_scenario_doc_cost(:sid, :start_date, :flock);
-            ")->bindValues([
-                ':sid'        => $id,
-                ':start_date' => $model->start_date,
-                ':flock'      => (int)$model->flock_size,
-            ])->execute();
+                Yii::$app->db->createCommand("
+                    SELECT oc.populate_scenario_doc_cost(:sid, :start_date, :flock);
+                ")->bindValues([
+                    ':sid'        => $id,
+                    ':start_date' => $model->start_date,
+                    ':flock'      => (int)$model->flock_size,
+                ])->execute();
 
-            // Populate full scenario (includes feed, labor, medicine, etc.)
-            Yii::$app->db->createCommand("
-                SELECT oc.populate_full_scenario(:sid);
-            ")->bindValues([
-                ':sid' => $id,
-            ])->execute();
+                // Populate full scenario (includes feed, labor, medicine, etc.)
+                Yii::$app->db->createCommand("
+                    SELECT oc.populate_full_scenario(:sid);
+                ")->bindValues([
+                    ':sid' => $id,
+                ])->execute();
 
-            // Optional: fetch break-even weeks directly
-            // $breakEvenWeeks = Yii::$app->db->createCommand("
-            //     SELECT * FROM oc.get_break_even_weeks(:sid);
-            // ")->bindValues([
-            //     ':sid' => $id,
-            // ])->queryAll();
+                // Optional: fetch break-even weeks directly
+                // $breakEvenWeeks = Yii::$app->db->createCommand("
+                //     SELECT * FROM oc.get_break_even_weeks(:sid);
+                // ")->bindValues([
+                //     ':sid' => $id,
+                // ])->queryAll();
 
-            // Run your existing calculation wrapper (if needed for totals)
-            $this->runCalculations($id, $model->start_date, (int)$model->flock_size);
+                // Run your existing calculation wrapper (if needed for totals)
+                $this->runCalculations($id, $model->start_date, (int)$model->flock_size);
 
-            // Redirect to view page
-            return $this->redirect(['view', 'id' => $id]);
+                // Redirect to view page
+                return $this->redirect(['view', 'id' => $id]);
+            }
         }
-    }
 
-    return $this->render('create', [
-        'model'    => $model,
-        'defaults' => $defaults
-    ]);
-}
+        return $this->render('create', [
+            'model'    => $model,
+            'defaults' => $defaults
+        ]);
+    }
 
 
     private function useDefaultIfEmpty($value, $defaults, $key)
@@ -372,9 +372,7 @@ class OperationalCostController extends Controller
 }
 
 
-    /**
-     * Optional: keep /operational-cost/result?scenario_id=XX working by redirecting to calculate.
-     */
+
     public function actionResult($scenario_id)
     {
         return $this->redirect(['calculate', 'id' => (int)$scenario_id]);
@@ -384,64 +382,64 @@ class OperationalCostController extends Controller
      * Batch pipeline for use after create; includes fallback if prices fn is missing.
      */
     private function runCalculations(int $scenarioId, string $startDate, int $flockSize): void
-{
-    $db = Yii::$app->db;
-    $tx = $db->beginTransaction();
+    {
+        $db = Yii::$app->db;
+        $tx = $db->beginTransaction();
 
-    try {
-        // 1) seed weeks
-        $db->createCommand("SELECT oc.ensure_soc_weeks(:sid)")
-            ->bindValue(':sid', $scenarioId)
-            ->execute();
+        try {
+            // 1) seed weeks
+            $db->createCommand("SELECT oc.ensure_soc_weeks(:sid)")
+                ->bindValue(':sid', $scenarioId)
+                ->execute();
 
-        // 2) eggs
-        $db->createCommand("SELECT oc.populate_scenario_eggs(:sid, :start_date, :birds)")
-            ->bindValues([
-                ':sid'        => $scenarioId,
-                ':start_date' => $startDate,
-                ':birds'      => $flockSize,
-            ])
-            ->execute();
+            // 2) eggs
+            $db->createCommand("SELECT oc.populate_scenario_eggs(:sid, :start_date, :birds)")
+                ->bindValues([
+                    ':sid'        => $scenarioId,
+                    ':start_date' => $startDate,
+                    ':birds'      => $flockSize,
+                ])
+                ->execute();
 
-        // 3) feed
-        $db->createCommand("SELECT oc.populate_scenario_feed_costs(:sid, :start_date, :birds)")
-            ->bindValues([
-                ':sid'        => $scenarioId,
-                ':start_date' => $startDate,
-                ':birds'      => $flockSize,
-            ])
-            ->execute();
+            // 3) feed
+            $db->createCommand("SELECT oc.populate_scenario_feed_costs(:sid, :start_date, :birds)")
+                ->bindValues([
+                    ':sid'        => $scenarioId,
+                    ':start_date' => $startDate,
+                    ':birds'      => $flockSize,
+                ])
+                ->execute();
 
-        // 4) DOC (week 1)
-        $db->createCommand("SELECT oc.populate_scenario_doc_cost(:sid, :start_date, :birds)")
-            ->bindValues([
-                ':sid'        => $scenarioId,
-                ':start_date' => $startDate,
-                ':birds'      => $flockSize,
-            ])
-            ->execute();
+            // 4) DOC (week 1)
+            $db->createCommand("SELECT oc.populate_scenario_doc_cost(:sid, :start_date, :birds)")
+                ->bindValues([
+                    ':sid'        => $scenarioId,
+                    ':start_date' => $startDate,
+                    ':birds'      => $flockSize,
+                ])
+                ->execute();
 
-        // 5) totals
-        $db->createCommand("SELECT oc.populate_scenario_operational_costs(:sid)")
-            ->bindValue(':sid', $scenarioId)
-            ->execute();
-        // 6) full scenario (feed + DOC + fixed + totals)
-        $db->createCommand("SELECT oc.populate_full_scenario(:sid)")
-            ->bindValue(':sid', $scenarioId)
-            ->execute();
+            // 5) totals
+            $db->createCommand("SELECT oc.populate_scenario_operational_costs(:sid)")
+                ->bindValue(':sid', $scenarioId)
+                ->execute();
+            // 6) full scenario (feed + DOC + fixed + totals)
+            $db->createCommand("SELECT oc.populate_full_scenario(:sid)")
+                ->bindValue(':sid', $scenarioId)
+                ->execute();
 
-        // 7) optional: break-even weeks
-        // $breakEvenWeeks = $db->createCommand("SELECT * FROM oc.get_break_even_weeks(:sid)")
-        //     ->bindValue(':sid', $scenarioId)
-        //     ->queryAll();
+            // 7) optional: break-even weeks
+            // $breakEvenWeeks = $db->createCommand("SELECT * FROM oc.get_break_even_weeks(:sid)")
+            //     ->bindValue(':sid', $scenarioId)
+            //     ->queryAll();
 
-        $tx->commit();
-    } catch (\Throwable $e) {
-        $tx->rollBack();
-        Yii::error($e->getMessage(), __METHOD__);
-        throw $e;
+            $tx->commit();
+        } catch (\Throwable $e) {
+            $tx->rollBack();
+            Yii::error($e->getMessage(), __METHOD__);
+            throw $e;
+        }
     }
-}
 
 
 

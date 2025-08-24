@@ -1,209 +1,201 @@
-/* Sidebar */
+/* ===============================
+   Sidebar 
+   =============================== */
+
 .sidebar {
-    background-color: #23431efc; 
-    color: #fff;
-    width: 250px;
-    height: 100vh;
-    position: fixed;
-    left: 0;
-    top: 0;
-    transition: width 0.3s ease;
-    overflow: hidden;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
-}
-.brand-link {
-  text-decoration: none;   /* removes underline */
-  color: inherit;          /* inherit text color instead of blue */
-}
-.brand-link:hover {
-  text-decoration: none;   /* prevent underline on hover */
-  color: inherit;          /* keep same color on hover */
+  background-color: #23431efc;
+  color: #fff;
+  width: 250px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  transition: width 0.3s ease;
+  overflow: hidden;
+  /* box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15); */
+
+  /* make footer stick to bottom */
+  display: flex;
+  flex-direction: column;
 }
 
+.sidebar.collapsed { width: 50px; }
 
-.sidebar.collapsed {
-    width: 50px;
-}
+/* brand/header */
+.brand-link { text-decoration: none; color: inherit; }
+.brand-link:hover { text-decoration: none; color: inherit; }
 
-/* Brand section */
 .sidebar .brand {
-    font-size: 1.6rem;
-    font-weight: 600;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 1.6rem;
+  font-weight: 600;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  /* remove the thin dividing line */
+  border-bottom: none;
+}
+.sidebar .brand i { font-size: 1.5rem; }
+
+/* nav list grows; can scroll if long */
+.sidebar .nav {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1 1 auto;
+  overflow-y: auto;
 }
 
-.sidebar .brand i {
-    font-size: 1.5rem;
-}
-
-/* Navigation list */
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-/* Each menu item */
-.sidebar ul li {
-    padding: 14px 20px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
-    transition: background 0.2s ease, padding-left 0.2s ease;
-}
-
-.sidebar ul li:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-    padding-left: 25px;
-}
-
-.sidebar ul li a {
-    color: #e0e0e0;
-    text-decoration: none;
-    font-size: 1.1rem;
-    font-weight: 500;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.sidebar ul li a i {
-    min-width: 20px;
-    font-size: 1rem;
-    color: #a8d5b5;
-}
-
-.sidebar ul li a:hover {
-    color: #fff;
-}
-
-/* Main content */
-.main-content {
-    margin-left: 250px;
-    padding: 20px;
-    transition: margin-left 0.3s ease;
-}
-
-.main-content.expanded {
-    margin-left: 60px;
-}
-
-/* Hamburger button */
-.hamburger {
-    font-size: 1.5rem;
-    cursor: pointer;
-    margin-right: 10px;
-    padding-right: 5px;
-    padding-bottom: 1px;
-    color: #2f332f;
-}
-
-/* Header styling */
-header {
-    display: flex;
-    align-items: center;
-    padding: 15px;
-    border-radius: 10px;
-    background: transparent;
-    border-bottom: none;
-    width: 100%;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* When scrolled */
-header.scrolled {
-    background-color: #eef3f1;
-}
-
-/* --- Active/hover states for sidebar links --- */
+/* reset li so the link owns the click area */
 .sidebar ul { list-style: none; padding: 0; margin: 0; }
-.sidebar ul li { padding: 0; } /* let the link control padding for a larger click target */
+.sidebar ul li { padding: 0; }
 
-.sidebar ul li .nav-link {
+/* base link */
+.sidebar ul li .nav-link{
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 20px;                 
-  color: #e0e0e0;
+  padding: 12px 16px;
+  margin: 4px 10px;                         
+  border-radius: 8px;
+  color: #e8efe9d1;
   text-decoration: none;
   font-size: 1.1rem;
   font-weight: 500;
-  transition: background .2s ease, padding-left .2s ease, color .2s ease;
+  transition: transform .18s ease, background .18s ease, color .18s ease, box-shadow .18s ease;
 }
 
-.sidebar ul li .nav-link i {
+/* subtle accent bar (no layout shift) */
+.sidebar ul li .nav-link::before{
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%) scaleY(.5);
+  width: 3px;
+  height: 60%;
+  border-radius: 2px;
+  background:rgba(26, 166, 26, 0.904);
+  opacity: 0;
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+/* icons */
+.sidebar ul li .nav-link i{
   min-width: 20px;
   font-size: 1rem;
-  color: #cee1d3;
+  color: #cfe7d2;
+  transition: color .18s ease, transform .18s ease;
 }
 
-/* Hover */
-.sidebar ul li .nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.08);
-  color: #ffffff7e;
-  padding-left: 25px;
-}
-
-/* Active (current page) */
-.sidebar ul li .nav-link.active,
-.sidebar ul li .nav-link[aria-current="page"] {
-  background-color: rgba(46, 229, 157, 0.18); 
+/* hover: glassy wash + tiny slide (no padding jump) */
+.sidebar ul li .nav-link:hover{
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04));
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+  transform: translateX(2px);
   color: #ffffff;
-  border-left: 4px solid #629f51;              
-  padding-left: 24px;
 }
+.sidebar ul li .nav-link:hover i{ color: #628d6a; }
 
+/* active/current: stronger wash + visible accent bar */
+.sidebar ul li .nav-link.active,
+.sidebar ul li .nav-link[aria-current="page"]{
+  background: linear-gradient(180deg, rgba(56,189,60,.22), rgba(56,189,60,.18));
+  /* box-shadow: inset 0 0 0 1px rgba(46,229,157,.18); */
+  color: #ffffff;
+}
+.sidebar ul li .nav-link.active::before,
+.sidebar ul li .nav-link[aria-current="page"]::before{
+  opacity: 1;
+  transform: translateY(-50%) scaleY(1);
+}
 .sidebar ul li .nav-link.active i,
-.sidebar ul li .nav-link[aria-current="page"] i {
-  color: #2ee59c71;
+.sidebar ul li .nav-link[aria-current="page"] i{
+  color: #82c792;
 }
 
-/* Remove default link decoration globally in the sidebar */
-.sidebar a { text-decoration: none; color: inherit; }
-.sidebar a:hover { text-decoration: none; color: inherit; }
-
-/* Optional: better keyboard focus without blue underline */
-.sidebar ul li .nav-link:focus-visible {
-  outline: 2px solid #6ae066;
-  outline-offset: 2px;
+/* keyboard focus */
+.sidebar ul li .nav-link:focus-visible{
+  outline: 0;
+  /* box-shadow: 0 0 0 2px rgba(46,229,157,.35); */
 }
 
-/* 1) Never overflow the page horizontally */
+/* footer (logout) — no dividing line */
+.sidebar-footer{
+  margin-top: auto;
+  padding: 8px 10px 14px;
+  border-top: none;
+}
+.sidebar-footer .nav-link{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  margin: 4px 10px;
+  border-radius: 10px;
+  color: #e0e0e0;
+  text-decoration: none;
+  transition: background .18s ease, color .18s ease;
+}
+.sidebar-footer .nav-link i{ color: #e0e0e0; }
+.sidebar-footer .nav-link:hover{
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04));
+  color: #fff;
+}
+
+/* ===============================
+   Layout / header / content
+   =============================== */
+
 html, body { overflow-x: hidden; }
 
-/* 2) Make the content actually fit next to the fixed sidebar */
 .main-content{
-  margin-left: 250px;                 /* keep your layout */
-  width: calc(100% - 250px);          /* prevent overflow */
+  margin-left: 250px;
+  width: calc(100% - 250px);
+  padding: 20px;
   box-sizing: border-box;
+  transition: margin-left 0.3s ease, width 0.3s ease;
 }
-
-/* When sidebar is collapsed (your "expanded" class) */
 .main-content.expanded{
   margin-left: 60px;
   width: calc(100% - 60px);
 }
 
-/* 3) Header shouldn't add width via padding */
+.hamburger{
+  font-size: 1.5rem;
+  cursor: pointer;
+  margin-right: 10px;
+  padding-right: 5px;
+  padding-bottom: 1px;
+  color: #2f332f;
+}
+
 header{
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-radius: 10px;
+  background: transparent;
+  border-bottom: none;
   width: 100%;
-  box-sizing: border-box;             /* padding included in width */
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box; /* include padding in width */
 }
+header.scrolled{ background-color: #daead8; }
 
-/* 4) Guard against grid children forcing overflow */
-.grid, .table-card, .table-wrap{
-  min-width: 0;
-}
+/* guard against children causing overflow */
+.grid, .table-card, .table-wrap{ min-width: 0; }
 
-/* 5) Charts: keep canvases inside their cards (you already use these; keep them) */
+/* charts */
 .table-wrap.chart{ overflow: hidden; }
 canvas.chart-canvas{ width:100% !important; max-width:100% !important; display:block; }
+
+/* Full-width content on login page (no sidebar) */
+.main-content.no-sidebar {
+  margin-left: 0;
+  width: 100%;
+}

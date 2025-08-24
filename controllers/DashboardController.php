@@ -28,19 +28,18 @@ class DashboardController extends Controller
         $week = $week ?? 20;
         $week = max(1, min(100, (int)$week));
 
-        // ===== Service-derived metrics & series =====
+        // Service-derived metrics & series 
         $svc        = new DashboardService();
         $kpi        = $svc->getKpiData($initialFlock, $week);
         $eggsRows   = $svc->getEggSeries($initialFlock, 1, 100);
         $livRows    = $svc->getLivabilitySeries(1, 100);
         $feedRows   = $svc->getFeedSeries($initialFlock, 1, 100);
 
-        // ===== Existing Summary helpers =====
+        // Existing Summary helpers 
         $costRows   = Summary::opsWeeklyCosts($scenarioId);
         $priceRows  = Summary::forecastPrices($scenarioId);
 
-        // --- NEW: revenue rows from the same aggregation used on the Revenue page
-        // Must return: week_no, revenue_small, revenue_white, total_weekly_revenue
+       
         $revRows    = Summary::eggRevenue($scenarioId);
 
         $indexByWeek = function(array $rows) {
@@ -71,7 +70,7 @@ class DashboardController extends Controller
             'Cull'         => (float)($p['cull_price']   ?? 0),
         ];
 
-        // ===== Revenue (trend + breakdown for selected week) =====
+        //Revenue (trend + breakdown for selected week) 
         $labels = range(1, 100);
 
         $revSmallSeries = [];
@@ -108,8 +107,6 @@ class DashboardController extends Controller
             'gPerBirdSeries'   => $gPerBirdSeries,
             'opsFixed'         => $opsFixed,
             'forecastBars'     => $forecastBars,
-
-            // NEW for revenue charts
             'revSmallSeries'   => $revSmallSeries,
             'revWhiteSeries'   => $revWhiteSeries,
             'revTotalSeries'   => $revTotalSeries,

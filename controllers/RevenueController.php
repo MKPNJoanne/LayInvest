@@ -79,12 +79,12 @@ class RevenueController extends Controller
             : 0.0;
 
 
-    // --- Revenue Summary ---
+    // Revenue Summary 
         $totalEggRevenue = array_sum(array_column($eggProvider->allModels, 'total_weekly_revenue'));
         $totalCullRevenue = $cullRow['cull_revenue'] ?? 0;
         $totalRevenue = $totalEggRevenue + $totalCullRevenue;
 
-    // --- Profit Calculation ---
+    // Profit Calculation
         $grossProfit = $totalRevenue - $costSummary['total_cost'];
         $profitMargin = $totalRevenue > 0
         ? ($grossProfit / $totalRevenue) * 100

@@ -4,6 +4,10 @@ use yii\bootstrap5\Html;
 
 AppAsset::register($this);
 $this->registerCsrfMetaTags();
+
+// Hide chrome on /auth/login
+$hideSidebar = Yii::$app->controller->id === 'auth'
+            && Yii::$app->controller->action->id === 'login';
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -15,64 +19,84 @@ $this->registerCsrfMetaTags();
     <?php $this->registerCssFile('@web/css/sidebar.css'); ?>
     <?php
     $this->registerJsFile('@web/js/main.js', [
-    'depends' => [\yii\web\JqueryAsset::class]
+        'depends' => [\yii\web\JqueryAsset::class]
     ]);
     ?>
 </head>
-<body>
-    
+
+<body class="<?= $hideSidebar ? 'login-page' : '' ?>">
 <?php $this->beginBody() ?>
 
-<div class="sidebar" id="sidebar">
-    <div class="brand">
-        <i class="fas fa-egg"></i>
-        <a href="<?= \yii\helpers\Url::to(['dashboard/index']) ?>" class="brand-link">
-            <span class="brand-text">LayInvest</span>
-        </a>
+<?php if (!$hideSidebar): ?>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="brand">
+            <i class="fas fa-egg"></i>
+            <a href="<?= \yii\helpers\Url::to(['dashboard/index']) ?>" class="brand-link">
+                <span class="brand-text">LayInvest</span>
+            </a>
+        </div>
+
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <?= Html::a('<i class="fas fa-chart-pie"></i> Overview', ['dashboard/index'], [
+                    'class' => 'nav-link ' . (Yii::$app->controller->id === 'dashboard' ? 'active' : '')
+                ]) ?>
+            </li>
+            <li class="nav-item">
+                <?= Html::a('<i class="fas fa-chart-line"></i> Operational Cost Analysis', ['operational-cost/index'], [
+                    'class' => 'nav-link ' . (Yii::$app->controller->id === 'operational-cost' ? 'active' : '')
+                ]) ?>
+            </li>
+            <li class="nav-item">
+                <?= Html::a('<i class="fas fa-dollar-sign"></i> Revenue & Break-even Analysis', ['revenue/view'], [
+                    'class' => 'nav-link ' . (Yii::$app->controller->id === 'revenue' ? 'active' : '')
+                ]) ?>
+            </li>
+            <li class="nav-item">
+                <?= Html::a('<i class="fas fa-list"></i> Weekly Summary', ['summary/index'], [
+                    'class' => 'nav-link ' . (Yii::$app->controller->id === 'summary' ? 'active' : '')
+                ]) ?>
+            </li>
+        </ul>
+
+        <!-- Footer (sticks to bottom) -->
+        <div class="sidebar-footer">
+            <?= Html::a('<i class="fas fa-sign-out-alt"></i> Logout', ['auth/logout'], [
+                'class' => 'nav-link logout-link',
+                'data-method' => 'post',
+                'data-pjax' => 0,
+            ]) ?>
+        </div>
     </div>
+<?php endif; ?>
 
-    <ul class="nav flex-column">
-        <li class="nav-item">
-            <?= Html::a('<i class="fas fa-chart-pie"></i> Overview', ['dashboard/index'], [
-                'class' => 'nav-link ' . (Yii::$app->controller->id === 'dashboard' ? 'active' : '')
-            ]) ?>
-        </li>
+<!-- Main content -->
+<div class="main-content<?= $hideSidebar ? ' no-sidebar' : '' ?>" id="mainContent">
+    <?php if (!$hideSidebar): ?>
+        <header>
+            <i class="fas fa-bars hamburger" id="hamburger"></i>
+            <h2><?= Html::encode($this->title ?: 'LayInvest Dashboard') ?></h2>
+        </header>
+    <?php endif; ?>
 
-        <li class="nav-item">
-            <?= Html::a('<i class="fas fa-chart-line"></i> Operational Cost Analysis', ['operational-cost/index'], [
-                'class' => 'nav-link ' . (Yii::$app->controller->id === 'operational-cost' ? 'active' : '')
-            ]) ?>
-        </li>
-
-        <li class="nav-item">
-            <?= Html::a('<i class="fas fa-dollar-sign"></i> Revenue & Break-even Analysis', ['revenue/view'], [
-                'class' => 'nav-link ' . (Yii::$app->controller->id === 'revenue' ? 'active' : '')
-            ]) ?>
-        </li>
-
-        <li class="nav-item">
-            <?= Html::a('<i class="fas fa-list"></i> Weekly Summary', ['summary/index'], [
-                'class' => 'nav-link ' . (Yii::$app->controller->id === 'summary' ? 'active' : '')
-            ]) ?>
-        </li>
-    </ul>
-</div>
-
-<div class="main-content" id="mainContent">
-    <header>
-        <i class="fas fa-bars hamburger" id="hamburger"></i>
-        <h2><?= Html::encode($this->title ?: 'LayInvest Dashboard') ?></h2>
-    </header>
     <div>
         <?= $content ?>
     </div>
 </div>
 
 <script>
-    document.getElementById('hamburger').addEventListener('click', function() {
-        document.getElementById('sidebar').classList.toggle('collapsed');
-        document.getElementById('mainContent').classList.toggle('expanded');
-    });
+  (function () {
+    var hb = document.getElementById('hamburger');
+    if (hb) {
+      hb.addEventListener('click', function () {
+        var s = document.getElementById('sidebar');
+        var m = document.getElementById('mainContent');
+        if (s) s.classList.toggle('collapsed');
+        if (m) m.classList.toggle('expanded');
+      });
+    }
+  })();
 </script>
 
 <?php $this->endBody() ?>

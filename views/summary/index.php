@@ -7,7 +7,7 @@ use yii\bootstrap5\BootstrapAsset;
 /** @var array $providers */
 /** @var array $dist */
 
-$this->title = $id ? "Weekly Summary (Scenario #{$id})" : "Summary";
+$this->title = $id ? "Weekly Summary": "Summary";
 $this->registerCssFile('@web/css/revenue.css', [
     'depends' => [BootstrapAsset::class],
 ]);
