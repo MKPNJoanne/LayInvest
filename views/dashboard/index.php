@@ -183,7 +183,7 @@ new Chart(document.getElementById('livabilityByWeek'), {
   data: { labels, datasets: [{ label: 'Livability %', data: livSeries, tension: .25 }]},
   options: {
     responsive:true, maintainAspectRatio:false,
-    scales:{ y:{ beginAtZero:true, max:100, ticks:{ callback:v => v+'%' } } }
+    scales:{ y:{  min: 85, max:100, ticks:{ callback:v => v+'%' } } }
   }
 });
 

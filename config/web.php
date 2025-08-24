@@ -13,6 +13,11 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
+            'user' => [
+            'identityClass'   => \app\models\User::class,
+            'enableAutoLogin' => true,     // for rememberMe
+            'loginUrl'        => ['auth/login'],
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'F5Hwgg7aMvpfJ_C-lFrGjc-9npRns3dG',
@@ -21,10 +26,17 @@ $config = [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
-        'user' => [
-            'identityClass' => 'app\models\User',
-            'enableAutoLogin' => true,
+        'as access' => [
+            'class'        => yii\filters\AccessControl::class,
+            'denyCallback' => function () { return Yii::$app->response->redirect(['auth/login']); },
+            'rules' => [
+                ['allow' => true, 'actions' => ['login'],  'controllers' => ['auth'], 'roles' => ['?']],
+                ['allow' => true, 'actions' => ['error'],  'controllers' => ['site'], 'roles' => ['?', '@']],
+                // Allow everything else only for logged-in users
+                ['allow' => true, 'roles' => ['@']],
+            ],
         ],
+
         'errorHandler' => [
             'errorAction' => 'site/error',
             
