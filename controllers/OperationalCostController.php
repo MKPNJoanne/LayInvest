@@ -9,16 +9,14 @@ use app\models\OperationalCostInput;
 
 class OperationalCostController extends Controller
 {
-    /**
-     * Create form: saves an input row into oc.operational_cost_inputs
-     * and immediately calculates & shows the result.
-     */
+    /**Create form: saves an input row into oc.operational_cost_inputs*/
 
     public function actionIndex()
     {
         $latestId = (new \yii\db\Query())
             ->from('oc.operational_cost_inputs')
             ->select('id')
+            ->where(['is_active' => true])
             ->orderBy(['id' => SORT_DESC])
             ->scalar();
 
@@ -256,7 +254,7 @@ class OperationalCostController extends Controller
         ->orderBy('week_no')
         ->all();
 
-        $totalCosts = (new \yii\db\Query())
+    $totalCosts = (new \yii\db\Query())
             ->select([
                 'eggs_total'            => 'COALESCE(SUM(eggs_total),0)',
                 'eggs_sellable'         => 'COALESCE(SUM(eggs_sellable),0)',
@@ -349,7 +347,7 @@ class OperationalCostController extends Controller
                 + (float)$totalCosts['electricity_cost_lkr'];
     $feedDocTotal   = (float)$totalCosts['cost_feed_lkr']
                 + (float)$totalCosts['cost_doc_lkr'];
-   $grandTotal     = $fixedCostTotal + $feedDocTotal;
+    $grandTotal     = $fixedCostTotal + $feedDocTotal;
 
     return $this->render('result', [
         'summary'         => $summary,
@@ -371,15 +369,24 @@ class OperationalCostController extends Controller
     ]);
 }
 
+    public function actionStartFresh()
+    {
+        Yii::$app->db->createCommand("
+            UPDATE oc.operational_cost_inputs 
+            SET is_active = false
+        ")->execute();
+
+        return $this->redirect(['create']);
+    }
 
 
     public function actionResult($scenario_id)
     {
         return $this->redirect(['calculate', 'id' => (int)$scenario_id]);
     }
-
     /**
-     * Batch pipeline for use after create; includes fallback if prices fn is missing.
+     * Wrapper to run all calculations in the correct order within a transaction.
+     * This ensures data integrity and that all dependent data is populated correctly.
      */
     private function runCalculations(int $scenarioId, string $startDate, int $flockSize): void
     {

@@ -30,11 +30,23 @@ $fmt3 = fn($v) => number_format((float)($v ?? 0), 3);
 
 <div class="page-section">
 
-<!-- Back Button -->
+<!-- Back Button & Start a new flock -->
 
 <div class="d-flex justify-content-end mb-3">
     <?= Html::a('← Back', ['operational-cost/index'], ['class' => 'btn btn-success me-2']) ?>
-    <?= Html::a('+ Start New Flock', ['operational-cost/create'], ['class' => 'btn btn-success']) ?>
+    <?= Html::a(
+    '+ Start Fresh',
+    ['operational-cost/start-fresh'],
+    [
+        'class' => 'btn btn-danger',
+        'data' => [
+            'confirm' => 'This will archive all previous flocks and start a new one. Continue?',
+            'method' => 'post',
+          ],
+       ]
+      )   
+    ?>
+
 </div>
 
 
