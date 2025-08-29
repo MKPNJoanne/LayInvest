@@ -31,32 +31,60 @@ $hideSidebar = Yii::$app->controller->id === 'auth'
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="brand">
-            <i class="fas fa-egg"></i>
+            <img src="<?= Yii::getAlias('@web/assets/images/sidebarLogo.png') ?>" alt="LayInvest Logo" style="width:125px; height:50px; border-radius:10px;">
             <a href="<?= \yii\helpers\Url::to(['dashboard/index']) ?>" class="brand-link">
-                <span class="brand-text">LayInvest</span>
+                <!-- <span class="brand-text">LayInvest</span> -->
             </a>
         </div>
 
         <ul class="nav flex-column">
             <li class="nav-item">
-                <?= Html::a('<i class="fas fa-chart-pie"></i> Overview', ['dashboard/index'], [
+            <?= Html::a(
+                Html::img(Yii::getAlias('@web/assets/images/dashboard.png'), [
+                    'alt' => 'Overview',
+                    'style' => 'width:23px; height:23px; margin-right:6px; vertical-align:middle;'
+                ]) . ' Overview',
+                ['dashboard/index'],
+                [
                     'class' => 'nav-link ' . (Yii::$app->controller->id === 'dashboard' ? 'active' : '')
-                ]) ?>
+                ]
+            ) ?>
             </li>
             <li class="nav-item">
-                <?= Html::a('<i class="fas fa-chart-line"></i> Operational Cost Analysis', ['operational-cost/index'], [
-                    'class' => 'nav-link ' . (Yii::$app->controller->id === 'operational-cost' ? 'active' : '')
-                ]) ?>
+                <?= Html::a(
+                    Html::img(Yii::getAlias('@web/assets/images/cost-management.png'), [
+                        'alt' => 'Cost Management',
+                        'style' => 'width:24px; height:24px; margin-right:6px; vertical-align:middle;'
+                    ]) . ' Operational Cost Analysis',
+                    ['operational-cost/index'],
+                    [
+                        'class' => 'nav-link ' . (Yii::$app->controller->id === 'operational-cost' ? 'active' : '')
+                    ]
+                ) ?>
             </li>
             <li class="nav-item">
-                <?= Html::a('<i class="fas fa-dollar-sign"></i> Revenue & Break-even Analysis', ['revenue/view'], [
-                    'class' => 'nav-link ' . (Yii::$app->controller->id === 'revenue' ? 'active' : '')
-                ]) ?>
+                <?= Html::a(
+                    Html::img(Yii::getAlias('@web/assets/images/money.png'), [
+                        'alt' => 'Revenue & Break-even',
+                        'style' => 'width:24px; height:24px; margin-right:6px; vertical-align:middle;'
+                    ]) . ' Revenue & Break-even Analysis',
+                    ['revenue/view'],
+                    [
+                        'class' => 'nav-link ' . (Yii::$app->controller->id === 'revenue' ? 'active' : '')
+                    ]
+                ) ?>
             </li>
             <li class="nav-item">
-                <?= Html::a('<i class="fas fa-list"></i> Weekly Summary', ['summary/index'], [
-                    'class' => 'nav-link ' . (Yii::$app->controller->id === 'summary' ? 'active' : '')
-                ]) ?>
+                <?= Html::a(
+                    Html::img(Yii::getAlias('@web/assets/images/check-list.png'), [
+                        'alt' => 'Weekly Summary',
+                        'style' => 'width:24px; height:24px; margin-right:6px; vertical-align:middle;'
+                    ]) . ' Weekly Summary',
+                    ['summary/index'],
+                    [
+                        'class' => 'nav-link ' . (Yii::$app->controller->id === 'summary' ? 'active' : '')
+                    ]
+                ) ?>
             </li>
         </ul>
 
@@ -75,8 +103,7 @@ $hideSidebar = Yii::$app->controller->id === 'auth'
 <div class="main-content<?= $hideSidebar ? ' no-sidebar' : '' ?>" id="mainContent">
     <?php if (!$hideSidebar): ?>
         <header>
-            <i class="fas fa-bars hamburger" id="hamburger"></i>
-            <h2><?= Html::encode($this->title ?: 'LayInvest Dashboard') ?></h2>
+            <h2><?= Html::encode($this->title ?: 'Overview') ?></h2>
         </header>
     <?php endif; ?>
 

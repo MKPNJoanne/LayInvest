@@ -1,6 +1,4 @@
-/* ===============================
-   Sidebar 
-   =============================== */
+/* Sidebar */
 
 .sidebar {
   background-color: #23431efc;
@@ -32,7 +30,10 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  /* remove the thin dividing line */
+  border-radius: 10px;
+  justify-content: center; 
+  align-items: center;       
+  flex-direction: column; 
   border-bottom: none;
 }
 .sidebar .brand i { font-size: 1.5rem; }
@@ -162,14 +163,14 @@ html, body { overflow-x: hidden; }
   width: calc(100% - 60px);
 }
 
-.hamburger{
+/* .hamburger{
   font-size: 1.5rem;
   cursor: pointer;
   margin-right: 10px;
   padding-right: 5px;
   padding-bottom: 1px;
   color: #2f332f;
-}
+} */
 
 header{
   display: flex;
