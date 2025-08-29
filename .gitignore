@@ -30,4 +30,25 @@ tests/_output/*
 tests/_support/_generated
 
 #vagrant folder
+
 /.vagrant
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.python-version
+
+# PHP / Yii2
+vendor/
+runtime/
+web/assets/
+
+# Env / secrets
+.env
+
+# Node (if any)
+node_modules/

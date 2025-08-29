@@ -1,0 +1,159 @@
+
+
+/* Container tweaks */
+.dashboard-container {
+    background-color: #f8fafc;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+/* Headline */
+.dashboard-container h2 {
+    font-weight: 700;
+    font-size: 1.75rem;
+    color: #111827;
+}
+
+/* Sticky topbar */
+.sticky-topbar {
+    background: #f4f4f4;
+    border-bottom: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    padding: 16px 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+/* KPI Cards */
+.card.kpi {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    padding: 1.25rem;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card.kpi.light-green {
+    background-color: #d6f5d6; /* light green */
+    border: none;
+    border-radius: 16px;
+    /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); */
+    padding: 1.25rem;
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card.kpi:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+}
+.card.kpi .small-muted {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-bottom: 6px;
+}
+.card.kpi .value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+/* Mortality color */
+.card.kpi.mortality .value {
+    color: #dc2626; /* red */
+}
+
+/* Week selector */
+#weekSelect {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 0.5rem 2rem 0.5rem 0.75rem;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+#weekSelect:hover {
+    background-color: #f3f4f6;
+}
+#weekSelect:focus {
+    border-color: #1c482a;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+/* Warning box */
+.warning-box {
+    background: #fff7ed;
+    border-left: 5px solid #f97316;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: #7c2d12;
+}
+.form-modern {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+.form-modern label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.form-modern select,
+.form-modern input[type="number"] {
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    background-color: #fff;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.form-modern select:focus,
+.form-modern input[type="number"]:focus {
+    outline: none;
+    border-color: #989999;
+    box-shadow: 0 0 0 3px rgba(13,110,253,0.15);
+}
+
+.form-modern select:hover,
+.form-modern input[type="number"]:hover {
+    border-color: #999;
+}
+
+
+/* Chart container cards */
+.card.p-3 {
+    background-color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+    padding: 1rem;
+}
+.custom-green {
+    background-color: #add8a8; /* green */
+}
+
+/* Chart section headers */
+.card.p-3 .small-muted {
+    font-size: 0.85rem;
+    color: #6b7280;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+/* General responsive spacing */
+@media (max-width: 768px) {
+    .card.kpi {
+        padding: 1rem;
+    }
+    .card.kpi .value {
+        font-size: 1.4rem;
+    }
+}
