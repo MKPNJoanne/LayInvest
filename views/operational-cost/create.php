@@ -2,7 +2,23 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
+
 $this->title = 'Operational Cost Input';
+
+$lastForecast = (new \yii\db\Query())
+    ->select('MAX(ds)')
+    ->from('oc.price_forecasts')
+    ->scalar();
+
+$maxDate = null;
+if ($lastForecast) {
+    // last_forecast_date - 99 weeks (693 days)
+    $maxDate = (new DateTime($lastForecast))
+        ->modify('-693 days')
+        ->format('Y-m-d');
+}
+
+$today = Yii::$app->formatter->asDate('now', 'php:Y-m-d');
 ?>
 <!-- Link CSS -->
 <link rel="stylesheet" href="<?= Yii::getAlias('@web/css/operational-cost-view.css') ?>">
@@ -22,8 +38,9 @@ $this->title = 'Operational Cost Input';
     ]); ?>
 
     <?= $form->field($model, 'start_date')->input('date', [
-    'required' => true,
-    'min' => Yii::$app->formatter->asDate('now', 'php:Y-m-d'), // blocks past dates & months
+        'required' => true,
+        'min' => $today,   // block past dates
+        'max' => $maxDate, // block too-late dates
     ]) ?>
 
     <?= $form->field($model, 'flock_size')->input('number', [

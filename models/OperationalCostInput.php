@@ -22,9 +22,36 @@ class OperationalCostInput extends ActiveRecord
             'number', 'min' => 0  // no negative values
             ],
             ['start_date', 'date', 'format' => 'php:Y-m-d'],
-            ['start_date', 'validateNotPast'], 
+            ['start_date', 'validateNotPast'],
+            ['start_date', 'validateNotTooLate'],
         ];
     }
+
+    public function validateNotTooLate($attribute, $params = [])
+    {
+        if (empty($this->$attribute)) return;
+
+        // get last forecast date
+        $lastForecast = (new \yii\db\Query())
+            ->select('MAX(ds)')
+            ->from('oc.price_forecasts')
+            ->scalar();
+
+        if ($lastForecast) {
+            // subtract 99 weeks (≈ 693 days)
+            $maxStart = (new \DateTime($lastForecast))
+                ->modify('-693 days')
+                ->format('Y-m-d');
+
+            if ($this->$attribute > $maxStart) {
+                $this->addError(
+                    $attribute,
+                    "Start date is too late. To ensure 100 weeks coverage, latest allowed is {$maxStart}."
+                );
+            }
+        }
+    }
+
 
     public function validateNotPast($attribute, $params = [])
     {
