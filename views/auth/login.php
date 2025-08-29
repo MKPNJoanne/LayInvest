@@ -7,14 +7,18 @@ use yii\widgets\ActiveForm;
 
 $this->title = 'Login';
 $this->registerCssFile('@web/css/login.css');
+$this->registerJs("
+    setTimeout(function() {
+        $('#login-error').fadeOut('slow');
+    }, 4000); // 4000ms = 4 seconds
+");
 
 ?>
 <?php if ($model->hasErrors()): ?>
-  <div class="alert alert-danger" style="border-radius:10px">
+  <div id="login-error" class="alert alert-danger" style="border-radius:10px">
     <?= Html::errorSummary($model) ?>
   </div>
 <?php endif; ?>
-
 
 <div class="login-wrap">
   <div class="login-left">
@@ -36,7 +40,7 @@ $this->registerCssFile('@web/css/login.css');
         <?= $form->field($model, 'rememberMe')->checkbox(['label'=>'Remember me']) ?>
 
         <div class="form-group mt-3">
-          <?= Html::submitButton('Login', ['class' => 'btn btn-login w-100']) ?>
+          <?= Html::submitButton('Login', ['class' => 'btn-login']) ?>
         </div>
 
       <?php ActiveForm::end(); ?>

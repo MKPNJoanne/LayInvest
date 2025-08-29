@@ -106,6 +106,21 @@ class OperationalCostController extends Controller
         ]);
     }
 
+    public function actionBack()
+    {
+        $latestId = (new \yii\db\Query())
+            ->from('oc.operational_cost_inputs')
+            ->select('id')
+            ->where(['is_active' => true])   // only active flock
+            ->orderBy(['id' => SORT_DESC])
+            ->scalar();
+
+        if ($latestId) {
+            return $this->redirect(['view', 'id' => $latestId]);
+        }
+        return $this->redirect(['create']);
+    }
+
 
     private function useDefaultIfEmpty($value, $defaults, $key)
     {

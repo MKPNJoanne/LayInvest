@@ -16,7 +16,7 @@
   background: #fff;
   border-radius: 16px;
   padding: 28px 24px;
-  box-shadow: 0 12px 30px rgba(0,0,0,.06);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.004);
 }
 
 .login-title {
@@ -38,6 +38,34 @@
   justify-content: center;
 }
 
+.btn-login {
+  background: #143d06;       
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  width: 100%;             
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.btn-login:hover {
+  background: #075217;   
+  transform: translateY(-2px);
+}
+
+.btn-login:active {
+  background: #143d06;    
+  transform: translateY(0);
+}
+
+.btn-login:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(4, 57, 13, 0.4);
+}
+
 .brand-box {
   background: transparent;   
   text-align: center;
@@ -48,7 +76,7 @@
 }
 
 .brand-box .logo img {
-  max-width: 300px;
+  max-width: 260px;
   border-radius: 10px;
   height: auto;
   display: block;

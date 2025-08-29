@@ -33,7 +33,7 @@ $fmt3 = fn($v) => number_format((float)($v ?? 0), 3);
 <!-- Back Button & Start a new flock -->
 
 <div class="d-flex justify-content-end mb-3">
-    <?= Html::a('← Back', ['operational-cost/index'], ['class' => 'btn btn-success me-2']) ?>
+    <?= Html::a('← Back', ['operational-cost/back'], ['class' => 'btn btn-success me-2']) ?>
     <?= Html::a(
     '+ Start Fresh',
     ['operational-cost/start-fresh'],
