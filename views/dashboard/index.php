@@ -18,7 +18,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-$this->title = "LayInvest Dashboard";
+$this->title = "Dashboard";
 $this->registerCssFile('@web/css/revenue.css');
 ?>
 
