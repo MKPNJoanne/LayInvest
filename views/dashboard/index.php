@@ -73,12 +73,17 @@ $this->registerCssFile('@web/css/revenue.css');
           <div class="muted"><?= number_format($kpis['broken_eggs']['broken_amount'] ?? 0) ?> eggs</div>
         </div>
       </div>
-      <div class="kpi">
+      <div class="kpi green">
         <div class="label">Total Eggs</div>
         <div class="value"><?= number_format($kpis['eggs_total'] ?? 0) ?></div>
       </div>
+       <div class="kpi">
+        <div class="label">Space Requirement</div>
+       <div class="value"><?= number_format($initialFlock * 2.5, 2) ?> sq.ft</div>
+      </div>
     </div>
   </div>
+  
 
   <!-- Charts -->
   <div class="grid" style="display:grid;grid-template-columns:1fr;gap:16px;">
