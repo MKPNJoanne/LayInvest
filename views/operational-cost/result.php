@@ -226,6 +226,15 @@ $fmt3 = fn($v) => number_format((float)($v ?? 0), 3);
             <td>Estimated Total Operational Cost</td>
             <td><?= $fmt2($grandTotal) ?></td>
           </tr>
+           <!-- Disclaimer row -->
+          <tr>
+            <td colspan="2" class="disclaimer">
+              <em>
+                Note: Estimates are based on the best-case scenario of egg laying percentages obtained from the farm guide.  
+                Maintenance, water, housing, and other utility costs are excluded from calculations.
+              </em>
+            </td>
+          </tr>
         </tfoot>
       </table>
     </div>
