@@ -52,7 +52,7 @@ $gridCommon = [
   <!-- Egg Production -->
   <div class="table-card mb-4">
     <div class="card-head">
-      <h3>Egg Production (Weeks 1–100)</h3>
+      <h3>White Egg Production (Weeks 1–100)</h3>
       <div class="meta muted">Auto-calculated from flock & lay %</div>
     </div>
     <?= GridView::widget(array_merge($gridCommon, [

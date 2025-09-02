@@ -59,7 +59,7 @@ $fmt3 = fn($v) => number_format((float)($v ?? 0), 3);
     </div>
 
     <div class="kpi green kpi--compact">
-      <div class="label">Total Eggs (Laid) in 100 Weeks</div>
+      <div class="label">Total White Eggs (Laid) in 100 Weeks</div>
       <div class="value"><?= number_format($summary['total_eggs_laid']) ?></div>
     </div>
 
@@ -93,7 +93,7 @@ $fmt3 = fn($v) => number_format((float)($v ?? 0), 3);
   <!-- Chart -->
   <div class="table-card mb-4">
     <div class="card-head">
-      <h3>Weekly Eggs (Laid vs Sellable)</h3>
+      <h3>Weekly White Eggs (Laid vs Sellable)</h3>
       <span class="meta">100 Weeks</span>
     </div>
     <div class="p-3" style="height:400px;">
@@ -113,7 +113,7 @@ $fmt3 = fn($v) => number_format((float)($v ?? 0), 3);
           <tr>
             <th>Cost Type</th>
             <th>Rate (LKR/egg)</th>
-            <th>Total Eggs</th>
+            <th>Total White Eggs</th>
             <th>Sellable Eggs</th>
             <th>Total Cost (LKR)</th>
           </tr>
