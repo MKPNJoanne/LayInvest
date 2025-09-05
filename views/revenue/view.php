@@ -51,7 +51,7 @@ $grandTotal       = $grand['total'];
     </div>
 
     <div class="kpi green">
-      <div class="label">Break-even (Eggs only)</div>
+      <div class="label">Break-even (White Eggs only)</div>
       <div class="value"><?= $breakEven['break_even_eggs'] ?: 'N/A' ?> week</div>
     </div>
 
@@ -62,7 +62,7 @@ $grandTotal       = $grand['total'];
 
     <?php if ($finalRow): ?>
     <div class="kpi ">
-      <div class="label">Gross Profit (Eggs only)</div>
+      <div class="label">Gross Profit (White Eggs only)</div>
       <div class="value"><?= number_format($finalRow['cum_profit_eggs'], 2) ?> LKR</div>
       
     </div>
@@ -235,7 +235,7 @@ $grandTotal       = $grand['total'];
           <tr class="section-row"><td colspan="2">UNIT ECONOMICS</td></tr>
           <tr>
             <td>
-              Cost per Egg (Laid) 
+              Cost per  Egg (Laid) 
               <span class="metric-note">
                 (Total Cost ÷ Total Eggs Laid → <?= number_format($eggsTotal) ?> eggs)
               </span>
@@ -255,7 +255,7 @@ $grandTotal       = $grand['total'];
           <tr>
             <td colspan="2" class="disclaimer">
               <em>
-                Note: Estimates are based on the best-case scenario of egg laying percentages.  
+                Note: Estimates are based on the best-case scenario of egg laying percentages obtained from the farm guide.  
                 Maintenance, water, housing, and other utility costs are excluded from cost per egg calculations.
               </em>
             </td>

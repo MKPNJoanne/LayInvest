@@ -73,19 +73,24 @@ $this->registerCssFile('@web/css/revenue.css');
           <div class="muted"><?= number_format($kpis['broken_eggs']['broken_amount'] ?? 0) ?> eggs</div>
         </div>
       </div>
-      <div class="kpi">
-        <div class="label">Total Eggs</div>
+      <div class="kpi green">
+        <div class="label">Total White Eggs</div>
         <div class="value"><?= number_format($kpis['eggs_total'] ?? 0) ?></div>
+      </div>
+       <div class="kpi">
+        <div class="label">Space Requirement</div>
+       <div class="value"><?= number_format($initialFlock * 2.5, 2) ?> sq.ft</div>
       </div>
     </div>
   </div>
+  
 
   <!-- Charts -->
   <div class="grid" style="display:grid;grid-template-columns:1fr;gap:16px;">
 
     <!-- Eggs -->
     <div class="table-card">
-      <div class="card-head"><h3>Egg Production by Week</h3></div>
+      <div class="card-head"><h3>White Egg Production by Week</h3></div>
       <div class="table-wrap" style="padding:16px;">
         <canvas id="eggsByWeek" style="height:360px;"></canvas>
       </div>
@@ -206,7 +211,7 @@ new Chart(document.getElementById('feedByWeek'), {
   }
 });
 
-// ===== NEW: Revenue charts =====
+// =====Revenue charts =====
 
 // Stacked bar + total line
 new Chart(document.getElementById('revTrend'), {
