@@ -10,7 +10,10 @@ use yii\bootstrap5\BootstrapAsset;
 $this->title = $id ? "Weekly Summary": "Summary";
 $this->registerCssFile('@web/css/revenue.css', [
     'depends' => [BootstrapAsset::class],
-]);
+    ]);
+$this->registerJsFile('@web/js/main.js', [
+    'depends' => [\yii\web\JqueryAsset::class]
+    ]);
 
 /**
  * Common GridView options to match revenue.css (table-modern + centered green pager)
@@ -50,7 +53,7 @@ $gridCommon = [
   <?php endif; ?>
 
   <!-- Egg Production -->
-  <div class="table-card mb-4">
+  <div id="production" class="table-card mb-4">
     <div class="card-head">
       <h3>White Egg Production (Weeks 1–100)</h3>
       <div class="meta muted">Auto-calculated from flock & lay %</div>
@@ -67,7 +70,7 @@ $gridCommon = [
   </div>
 
   <!-- Egg Revenue -->
-  <div class="table-card mb-4">
+  <div id="revenue" class="table-card mb-4">
     <div class="card-head">
       <h3>Egg Revenue</h3>
       <div class="meta muted">Weekly & cumulative revenue</div>
@@ -85,7 +88,7 @@ $gridCommon = [
   </div>
 
   <!-- Feed Consumption -->
-  <div class="table-card mb-4">
+  <div  id="feed" class="table-card mb-4">
     <div class="card-head">
       <h3>Feed Consumption</h3>
       <div class="meta muted">Type, grams/bird/day, cost</div>
@@ -104,7 +107,7 @@ $gridCommon = [
   </div>
 
   <!-- Operational Costs -->
-  <div class="table-card mb-4">
+  <div id="costs" class="table-card mb-4">
     <div class="card-head">
       <h3>Operational Costs</h3>
       <div class="meta muted">Weekly cost breakdown </div>
@@ -121,7 +124,7 @@ $gridCommon = [
   </div>
 
   <!-- Cull Revenue -->
-  <div class="table-card mb-4">
+  <div id="cull" class="table-card mb-4">
     <div class="card-head">
       <h3>Cull Revenue</h3>
       <div class="meta muted">Final culling income</div>
@@ -138,7 +141,7 @@ $gridCommon = [
   </div>
 
   <!-- Forecasted Prices -->
-  <div class="table-card mb-5">
+  <div id="prices" class="table-card mb-5">
     <div class="card-head">
       <h3>Forecasted Prices</h3>
       <div class="meta muted">Model-projected input & output prices</div>
