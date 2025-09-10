@@ -1,22 +1,20 @@
-# INNOVATIVE BUSINESS MODELING TOOL FOR SUSTAINABLE COMMERCIAL LAYER EGG PRODUCTION
+# INNOVATIVE BUSINESS MODELING TOOL FOR COMMERCIAL LAYER EGG PRODUCTION
 
-**LayInvest** is a business forecasting and planning system developed as part of the final research project. It provides a simulation-based framework for supporting decision-making in Sri Lanka’s commercial layer poultry industry by integrating time-series forecasting (via Facebook Prophet) and deterministic modeling of production and costs.
+LayInvest is a financial forecasting and decision-support system built as part of a research project on Sri Lanka’s commercial layer poultry industry. The tool combines time-series forecasting (Prophet) with structured cost and production models to help farmers, investors, and researchers evaluate profitability under changing market conditions
 
 ---
 
 ## Project Overview
 
-The Sri Lankan poultry industry is highly sensitive to fluctuations in market prices of key inputs such as feed, DOC (Day-Old Chicks), and egg selling prices. LayInvest offers a planning toolkit that helps farm operators, investors, and researchers simulate financial performance based on current and forecasted market conditions.
-
+The poultry sector in Sri Lanka faces challenges from volatile input costs (feed, DOCs, electricity, labour) and fluctuating egg and cull bird prices. LayInvest provides a simulation-based planning framework that generates weekly financial forecasts, break-even insights, and profitability projections to support better decision-making.
 ---
 
 ## Objectives
 
-- Enable accurate price forecasting for market-sensitive variables
-- Assist financial planning and risk evaluation for poultry operations
-- Simulate egg production, mortality, and cost dynamics
-- Help visualize potential profitability under different assumptions
-- Use real-world farm and market data to drive practical insights
+- Forecast market-sensitive inputs (feed, DOC, cull, egg prices)
+- Simulate egg production, mortality, and operational costs
+- Provide profitability milestones, break-even analysis, and scenario testing
+- Deliver practical, data-driven insights for poultry sector stakeholders
 
 ---
 
@@ -36,45 +34,27 @@ The Sri Lankan poultry industry is highly sensitive to fluctuations in market pr
 
 ---
 
-## Forecasting Strategy
-
-Only market-driven inputs are AI-predicted using **Facebook Prophet**. Other operational parameters follow historical or formula-based models.
-
-| Variable              | Forecasted | Source             |
-|-----------------------|------------|--------------------|
-| Egg prices            | Yes        | Prophet Model      |
-| Feed prices           | Yes        | Prophet Model      |
-| DOC prices            | Yes        | Prophet Model      |
-| Cull bird prices      | Yes        | Prophet Model      |
-| Egg production yield  | No         | Formula-based      |
-| Mortality rate        | No         | Linear (by flock)  |
-| Operational costs     | No         | Static / adjustable|
-
----
 
 ## Technology Stack
 
-| Component           | Description                            |
-|---------------------|----------------------------------------|
-| PHP 8.1+            | Core backend language                  |
-| Yii2 Framework      | MVC structure and REST support         |
-| PostgreSQL          | Relational database for data modeling  |
-| Facebook Prophet    | Python library for time-series forecasts |
-| Composer            | PHP package and dependency management  |
+| Component             | Purpose                                                         |
+| --------------------- | --------------------------------------------------------------- |
+| **PostgreSQL**        | Database schema, functions, and views for cost & price modeling |
+| **Python (Prophet)**  | Forecasting engine for market-driven variables                  |
+| **Jupyter Notebooks** | Testing, validation, and visualization of forecast results      |
+| **PHP 8.1 + Yii**     | Backend framework for business logic, APIs, and dashboards      |
+| **JavaScript/jQuery** | Frontend interactivity and visualizations                       |
+| **Bootstrap 5**       | Responsive and styled UI components                             |
 
 
 ## License
-This software is intended for research and academic use. For licensing in commercial or production environments, please contact the project owner.
+This software is intended for research and academic use.
 
 ## Contact
-Project Author: MKPN Joanne
-
-Student Number: 23084
-
-Research Supervisor: Mr Gayan Perera
-
-Institution: National School of Business Management
-
-Email: pramudinurakshi27@gmail.com
+- Project Author: MKPN Joanne
+- Student Number: 23084
+- Research Supervisor: Mr Gayan Perera
+- Institution: National School of Business Management
+- Email: pramudinurakshi27@gmail.com
 
 © 2025 by MKPN Joanne 
