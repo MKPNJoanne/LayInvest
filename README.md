@@ -1,12 +1,7 @@
 # INNOVATIVE BUSINESS MODELING TOOL FOR COMMERCIAL LAYER EGG PRODUCTION
 
-LayInvest is a financial forecasting and decision-support system built as part of a research project on Sri Lanka’s commercial layer poultry industry. The tool combines time-series forecasting (Prophet) with structured cost and production models to help farmers, investors, and researchers evaluate profitability under changing market conditions
+LayInvest is a business modeling and decision-support system developed as part of an academic research project. It combines time-series forecasting (Prophet) with deterministic production and cost models to support financial planning in Sri Lanka’s commercial layer poultry industry. The tool generates weekly projections of revenue, costs, and profitability, helping farmers and investors make data-driven decisions.
 
----
-
-## Project Overview
-
-The poultry sector in Sri Lanka faces challenges from volatile input costs (feed, DOCs, electricity, labour) and fluctuating egg and cull bird prices. LayInvest provides a simulation-based planning framework that generates weekly financial forecasts, break-even insights, and profitability projections to support better decision-making.
 ---
 
 ## Objectives
