@@ -92,7 +92,7 @@ class OperationalCostController extends Controller
                 //     ':sid' => $id,
                 // ])->queryAll();
 
-                // Run your existing calculation wrapper (if needed for totals)
+                // Run existing calculation wrapper (if needed for totals)
                 $this->runCalculations($id, $model->start_date, (int)$model->flock_size);
 
                 // Redirect to view page
@@ -215,7 +215,7 @@ class OperationalCostController extends Controller
         ->bindValue(':sid', $scenarioId)
         ->execute();
 
-    // 3) ALWAYS run in the proven order
+    // 3) ALWAYS run in this order
     $tx = $db->beginTransaction();
     try {
         // 3.1 seed 100 weeks
@@ -288,7 +288,7 @@ class OperationalCostController extends Controller
             ->where(['scenario_id' => $scenarioId])
             ->one();
 
-    $feedByType = (new \yii\db\Query())
+        $feedByType = (new \yii\db\Query())
         ->select([
             'feed_type',
             'kg'         => 'ROUND(SUM(feed_kg), 3)',
@@ -383,7 +383,7 @@ class OperationalCostController extends Controller
         'docForecast'     => $docForecast,
     ]);
 }
-
+    //start fresh button
     public function actionStartFresh()
     {
         Yii::$app->db->createCommand("

@@ -106,8 +106,6 @@ html, body{
   color: #fff;
 }
 
-
-
 /* ---- Table Card ---- */
 .table-modern tfoot tr {
   background: #ffffff;   /* light background, same as header */
@@ -190,7 +188,7 @@ html, body{
   transition: all 0.2s ease;
 }
 
-/* ===== Statement-style financial tables ===== */
+/*financial tables */
 
 .statement-card{
   /* border: 1px solid var(--line); */
@@ -329,7 +327,6 @@ html, body{
   border-color: #ddd; */
   cursor: not-allowed;
 }
-
 
 .muted{ color: var(--muted) !important; }
 
