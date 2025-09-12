@@ -85,7 +85,7 @@ class OperationalCostController extends Controller
                     ':sid' => $id,
                 ])->execute();
 
-                // Optional: fetch break-even weeks directly
+                // fetch break-even weeks directly
                 // $breakEvenWeeks = Yii::$app->db->createCommand("
                 //     SELECT * FROM oc.get_break_even_weeks(:sid);
                 // ")->bindValues([
@@ -147,7 +147,7 @@ class OperationalCostController extends Controller
             ->indexBy('cost_type')
             ->all();
 
-        // More resilient "has results" — either summary or SOC rows exist
+        // "has results" — either summary or SOC rows exist
         $hasResults = (new \yii\db\Query())
             ->from('oc.scenario_egg_summary')
             ->where(['scenario_id' => $id])
@@ -250,24 +250,24 @@ class OperationalCostController extends Controller
         throw $e;
     }
 
-    // 4) Build everything the result view needs (unchanged)
-    $baseline = (new \yii\db\Query())
-        ->select(['cost_type', 'base_value', 'monthly_increment_pct'])
-        ->from('oc.oc_baselines')
-        ->indexBy('cost_type')
-        ->all();
-    $baseline = array_change_key_case($baseline, CASE_LOWER);
+    // 4) Build everything the result view needs 
+        $baseline = (new \yii\db\Query())
+            ->select(['cost_type', 'base_value', 'monthly_increment_pct'])
+            ->from('oc.oc_baselines')
+            ->indexBy('cost_type')
+            ->all();
+        $baseline = array_change_key_case($baseline, CASE_LOWER);
 
-    $summary = (new \yii\db\Query())
-        ->from('oc.scenario_egg_summary')
-        ->where(['scenario_id' => $scenarioId])
-        ->one();
+        $summary = (new \yii\db\Query())
+            ->from('oc.scenario_egg_summary')
+            ->where(['scenario_id' => $scenarioId])
+            ->one();
 
-    $weekly = (new \yii\db\Query())
-        ->from('oc.scenario_egg_production')
-        ->where(['scenario_id' => $scenarioId])
-        ->orderBy('week_no')
-        ->all();
+        $weekly = (new \yii\db\Query())
+            ->from('oc.scenario_egg_production')
+            ->where(['scenario_id' => $scenarioId])
+            ->orderBy('week_no')
+            ->all();
 
     $totalCosts = (new \yii\db\Query())
             ->select([
@@ -400,8 +400,7 @@ class OperationalCostController extends Controller
         return $this->redirect(['calculate', 'id' => (int)$scenario_id]);
     }
     /**
-     * Wrapper to run all calculations in the correct order within a transaction.
-     * This ensures data integrity and that all dependent data is populated correctly.
+     * Wrapper to run all calculations in the correct order within a transaction. all dependent data is populated correctly.
      */
     private function runCalculations(int $scenarioId, string $startDate, int $flockSize): void
     {
@@ -462,8 +461,5 @@ class OperationalCostController extends Controller
             throw $e;
         }
     }
-
-
-
 
 }

@@ -101,7 +101,7 @@ class SummaryController extends Controller
         $add('Prices',  $prices);
         $add('Cull',    $cull);
 
-        // Save to temp file and send (robust for downloads)
+        // Save to temp file and send
         $tmp = tempnam(sys_get_temp_dir(), 'xls');
         (new Xlsx($wb))->save($tmp);
 

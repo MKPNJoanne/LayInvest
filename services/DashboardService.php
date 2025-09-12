@@ -99,7 +99,7 @@ class DashboardService
         return 0;
     }
 
-    /** -------- Birds trajectory derived from Livability (%) -------- */
+    /**  Birds Livability (%)  */
     private function getBirdsTrajectory(int $initialFlock, int $toWeek = 100): array
     {
         $initialFlock = $this->clampFlockSize($initialFlock);
@@ -251,7 +251,7 @@ class DashboardService
         ];
     }
 
-    /** Eggs series scaled by derived birds. */
+    /** Eggs series scaled */
     public function getEggSeries(int $initialFlock, int $startWeek, int $endWeek): array
     {
         $initialFlock = $this->clampFlockSize($initialFlock);
