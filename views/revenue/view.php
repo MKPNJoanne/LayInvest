@@ -210,7 +210,7 @@ $grandTotal       = $grand['total'];
             <td class="amount"><?= number_format($costSummary['cost_electricity'], 2) ?> LKR</td>
           </tr>
           <tr class="total-row">
-            <td>Total Operational Cost</td>
+            <td>Total Operational Cost <span class="metric-note">(DOC included)</span></td>
             <td class="amount"><?= number_format($costSummary['total_cost'], 2) ?> LKR</td>
           </tr>
 

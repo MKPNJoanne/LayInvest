@@ -242,6 +242,10 @@ class OperationalCostController extends Controller
         $db->createCommand("SELECT oc.populate_scenario_operational_costs(:sid)")
             ->bindValue(':sid', $scenarioId)
             ->execute();
+        // 5b) Prices (egg, DOC, cull, feed)
+        $db->createCommand("SELECT oc.populate_scenario_prices(:sid)")
+            ->bindValue(':sid', $scenarioId)
+            ->execute();
 
         $tx->commit();
     } catch (\Throwable $e) {

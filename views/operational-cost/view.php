@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Html;
 
-$this->title = "Operational Cost Input #{$model['id']}";
+$this->title = "Operational Cost Input";
 ?>
 <link rel="stylesheet" href="<?= Yii::getAlias('@web/css/operational-cost-view.css') ?>">
 
