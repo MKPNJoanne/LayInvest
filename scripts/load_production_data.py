@@ -7,7 +7,7 @@ use_cols = [
     'brown_eggs', 'egg_weight'
 ]
 df = pd.read_excel("../data/Research_Data.xlsx", sheet_name="Production Data", usecols=use_cols)
-# 🔍 Debug: Show the raw headers exactly as Pandas sees them
+# Debug: Show the raw headers exactly as Pandas sees them
 #print("Raw Excel columns:", df.columns.tolist())
 
 # Clean hidden spaces just in case
