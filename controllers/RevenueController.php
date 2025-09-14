@@ -22,8 +22,9 @@ class RevenueController extends Controller
         ")->queryScalar();
 
         if (!$scenarioId) {
-            throw new NotFoundHttpException("No scenarios found. Please create one first.");
+            return $this->redirect(['operational-cost/create']);
         }
+
 
         // 2) Egg revenue
         $eggRows = $db->createCommand("

@@ -17,11 +17,22 @@ public function actionLogin()
 
         $model = new LoginForm();
 
-        // Handle login submission
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            // Redirect to last visited page or dashboard
-            return $this->redirect(Yii::$app->user->getReturnUrl(['dashboard/index']));
-        }
+                // After successful login → check if scenarios exist
+                $db = Yii::$app->db;
+                $hasScenario = $db->createCommand("
+                    SELECT EXISTS(
+                        SELECT 1
+                        FROM oc.operational_cost_inputs
+                    )
+                ")->queryScalar();
+
+                if ($hasScenario) {
+                    return $this->redirect(['dashboard/index']);
+                } else {
+                   return $this->redirect(['operational-cost/create']);
+                }
+            }
 
         // Always clear password before re-rendering form
         $model->password = '';

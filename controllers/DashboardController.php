@@ -18,7 +18,7 @@ class DashboardController extends Controller
             ->one();
 
         if (!$scenario) {
-            return $this->render('index_empty');
+            return $this->render('operational-cost/create');
         }
 
         $scenarioId   = (int)$scenario['id'];
@@ -113,4 +113,5 @@ class DashboardController extends Controller
             'weekRevBreakdown' => $weekRevBreakdown,
         ]);
     }
+    
 }

@@ -20,6 +20,20 @@ class SummaryController extends Controller
 
     public function actionIndex($id = null)
     {
+        $db = Yii::$app->db;
+
+        // 1) Latest scenario
+        $scenarioId = $db->createCommand("
+            SELECT id
+            FROM oc.operational_cost_inputs
+            ORDER BY id DESC
+            LIMIT 1
+        ")->queryScalar();
+
+        if (!$scenarioId) {
+            return $this->redirect(['operational-cost/create']);
+        }
+        
         $id = $this->resolveScenarioId($id);
         if (!$id) {
             return $this->render('index', ['id'=>null, 'providers'=>[], 'dist'=>[]]);
