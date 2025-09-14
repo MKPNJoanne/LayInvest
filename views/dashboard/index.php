@@ -134,7 +134,7 @@ $this->registerCssFile('@web/css/revenue.css');
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
       <!-- Fixed Ops Cost pie -->
       <div class="table-card">
-        <div class="card-head"><h3>Operational Cost Breakdown (Fixed) — Week <?= (int)$week ?></h3></div>
+        <div class="card-head"><h3>Fixed Cost Breakdown — Week <?= (int)$week ?></h3></div>
         <div class="table-wrap" style="padding:16px;">
           <canvas id="opsPie" style="height:320px;"></canvas>
         </div>
