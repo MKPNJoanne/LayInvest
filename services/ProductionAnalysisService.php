@@ -5,6 +5,8 @@ use yii\db\Query;
 use app\config\DashboardConfig;
 use app\models\ProductionData;
 
+//calculates weekly production figures from farm data. It sums white and brown eggs, finds the average egg weight, 
+//and calculates mortality percentage for a given week, while following the laying schedule policy.
 class ProductionAnalysisService {
     public function getWeeklyProduction(int $week, bool $ignorePolicy = false): array {
         // Enforce policy window unless override

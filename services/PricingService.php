@@ -2,6 +2,9 @@
 namespace app\services;
 
 use Yii;
+//used to fetch weekly pricing data from the database. 
+//It gets forecasted feed prices, cull bird prices, and the baseline per-egg operational costs 
+//starting from the scenario’s start date. These values are then used in cost and profitability calculations
 
 class PricingService
 {

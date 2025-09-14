@@ -5,7 +5,8 @@ use Yii;
 use yii\db\Query;
 use app\config\DashboardConfig;
 use app\models\FeedConsumption;
-
+//this service to read feed records and calculate how much feed the birds ate each week. 
+//It works whether the data is stored as feed per bird or total feed in kilos
 class FeedAnalysisService {
     private $schemaConfig = null;
 

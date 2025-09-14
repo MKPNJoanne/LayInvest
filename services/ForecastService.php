@@ -2,10 +2,9 @@
 namespace app\services;
 
 use Yii;
-// ForecastService is responsible for managing forecasts
-// It ensures that forecasts for a given series are available
-//written to avoid recomputing forecasts
-
+//service makes sure forecasts are always ready. First it checks if forecasts already exist in the database; if not, 
+//it builds history from raw prices, runs Prophet through the ForecastRunner, 
+//saves the results into price_forecasts, and returns them. This avoids recalculating the same forecasts again and again.”
 final class ForecastService
 {
     public function ensureForecast(string $series, string $startDate, string $unit, int $weeks = 100): array

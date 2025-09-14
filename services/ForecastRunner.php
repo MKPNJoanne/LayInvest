@@ -1,6 +1,7 @@
 <?php
 namespace app\services;
-
+//service to run the Prophet forecasting model. 
+//It sends past price data to a Python script, gets back the future predictions, and returns them to the system for use in planning
 final class ForecastRunner
 {
     public function run(string $series, string $startDate, array $history, string $unit, int $weeks = 100): array

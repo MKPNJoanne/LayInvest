@@ -7,12 +7,8 @@ use app\models\FeedConsumption;
 use app\models\ProductionData;
 use app\config\DashboardConfig;
 
-/**
- * Dashboard data service.
- * - Birds derived from Livability (%)
- * - KPIs/series scaled by derived birds
- * - FCR taken ONLY from core.feed_consumption.fcr (no computation)
- */
+//converts raw farm data into weekly KPIs and charts like livability, 
+//laying %, eggs, feed use, and FCR for the dashboard.
 class DashboardService
 {
     /** Clamp flock size to supported range. */
